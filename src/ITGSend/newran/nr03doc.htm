@@ -1,0 +1,1758 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-nz">
+<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<meta NAME="GENERATOR" CONTENT="Microsoft FrontPage 6.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<title>Newran - random number generator library</title>
+<link rel="stylesheet" type="text/css" href="rbd.css">
+<link REL="SHORTCUT ICON" HREF="favicon.ico">
+</head>
+
+<body>
+
+<h1><a NAME="top"></a>Newran03 - a random number generator library</h1>
+
+<p>22 April, 2006 - beta version.</p>
+
+<p>Copyright (C) 2006: R B Davies </p>
+
+<ul>
+  <li><a HREF="#overview">Overview</a></li>
+  <li><a HREF="#starting">Getting started</a></li>
+  <li><a href="#organisation">Program organisation</a></li>
+  <li><a href="#testing">Testing</a></li>
+  <li><a href="#urng">The uniform random number generators</a></li>
+  <li><a HREF="#description">Descriptions of the classes to be accessed by the user</a></li>
+  <li><a HREF="#supporting">Descriptions of the supporting classes</a></li>
+  <li><a HREF="#generating">Generating numbers from other distributions</a></li>
+  <li><a HREF="#other">Other people's code</a></li>
+  <li><a HREF="#files">Files included in this package</a></li>
+  <li><a HREF="#class">Class structure</a></li>
+  <li><a HREF="#todo">To do</a></li>
+  <li><a href="#history">History</a></li>
+  <li><a HREF="ol_doc.htm">To online documentation page</a></li>
+</ul>
+
+<p>This is a C++ library for generating sequences of pseudo-random numbers from a wide variety of
+distributions. It is particularly appropriate for the situation where one requires
+sequences of identically distributed random numbers since the set up time for each type of
+distribution is relatively long but it is efficient when generating each new random
+number. The library includes <i>classes</i> for generating random numbers from a number of
+distributions and is easily extended to be able to generate random numbers from almost any
+of the standard distributions.</p>
+
+<p><b>There have been substantial changes from <i>newran02</i> in the way seeds 
+are handled. See the section on <a href="#organisation">program organisation</a> if you are upgrading.</b></p>
+
+<p><b>You need to read the section on <a href="#organisation">program organisation</a> 
+even if you are not upgrading.</b></p>
+
+<p>Comments and bug reports to robert<b> at </b>statsresearch.co.nz [replace <b>
+at</b> by you-know-what].</p>
+
+<p>For updates and notes see <a href="http://www.robertnz.net">http://www.robertnz.net</a>.
+</p>
+
+<P>There are no restrictions on the use of <I>newran</I> except that I take no
+liability for any problems that may arise from its use.</P>
+<P>I welcome its distribution as part of low cost CD-ROM collections. </P>
+<P>You can use it in your commercial projects. However, if you distribute the
+source, please make it clear which parts are mine and that they are available
+essentially for free over the Internet. </P>
+
+<p>&nbsp;</p>
+<h2><a NAME="overview"></a>Overview</h2>
+
+<p>The following are the classes for generating random numbers from particular
+distributions&nbsp; </p>
+
+<table BORDER="0" width="100%">
+  <tr>
+    <td VALIGN="TOP" width="20%"><a HREF="#uniform">Uniform</a></td>
+    <td VALIGN="TOP" width="80%">uniform distribution</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP" width="20%"><a HREF="#constant">Constant</a></td>
+    <td VALIGN="TOP" width="80%">return a constant</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP" width="20%"><a HREF="#exponential">Exponential</a></td>
+    <td VALIGN="TOP" width="80%">negative exponential distribution</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP" width="20%"><a HREF="#cauchy">Cauchy</a></td>
+    <td VALIGN="TOP" width="80%">Cauchy distribution</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP" width="20%"><a HREF="#normal">Normal</a></td>
+    <td VALIGN="TOP" width="80%">normal distribution</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP" width="20%"><a HREF="#chisq">ChiSq</a></td>
+    <td VALIGN="TOP" width="80%">non-central chi-squared distribution</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP" width="20%"><a HREF="#gamma">Gamma</a></td>
+    <td VALIGN="TOP" width="80%">gamma distribution</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP" width="20%"><a HREF="#pareto">Pareto</a></td>
+    <td VALIGN="TOP" width="80%">Pareto distribution</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP" width="20%"><a HREF="#poisson">Poisson</a></td>
+    <td VALIGN="TOP" width="80%">Poisson distribution</td>
+  </tr>
+  <tr>
+    <td width="20%"><a HREF="#binomial">Binomial</a></td>
+    <td width="80%">binomial distribution</td>
+  </tr>
+  <tr>
+    <td width="20%"><a HREF="#negativebinomial">NegativeBinomial</a></td>
+    <td width="80%">negative binomial distribution</td>
+  </tr>
+  <tr>
+    <td width="20%"><a href="#stable">Stable</a></td>
+    <td width="80%">stable family of distributions</td>
+  </tr>
+</table>
+
+<p>The following classes are available to the user for generating numbers from other
+distributions &nbsp; </p>
+
+<table BORDER="0" WIDTH="100%">
+  <tr>
+    <td VALIGN="top" width="20%"><a HREF="#posgenx">PosGenX</a></td>
+    <td VALIGN="top" width="80%">Positive random numbers with a decreasing density</td>
+  </tr>
+  <tr>
+    <td VALIGN="top" width="20%"><a HREF="#symgenx">SymGenX</a></td>
+    <td VALIGN="top" width="80%">Random numbers from a symmetric unimodal density</td>
+  </tr>
+  <tr>
+    <td VALIGN="top" width="20%"><a HREF="#asymgenx">AsymGenX</a></td>
+    <td VALIGN="top" width="80%">Random numbers from an asymmetric unimodal density</td>
+  </tr>
+  <tr>
+    <td VALIGN="top" width="20%"><a HREF="#posgen">PosGen</a></td>
+    <td VALIGN="top" width="80%">Positive random numbers with a decreasing density</td>
+  </tr>
+  <tr>
+    <td VALIGN="top" width="20%"><a HREF="#symgen">SymGen</a></td>
+    <td VALIGN="top" width="80%">Random numbers from a symmetric unimodal density</td>
+  </tr>
+  <tr>
+    <td VALIGN="top" width="20%"><a HREF="#asymgen">AsymGen</a></td>
+    <td VALIGN="top" width="80%">Random numbers from an asymmetric unimodal density</td>
+  </tr>
+  <tr>
+    <td VALIGN="top" width="20%"><a HREF="#discretegen">DiscreteGen</a></td>
+    <td VALIGN="top" width="80%">Random numbers from a discrete distribution</td>
+  </tr>
+  <tr>
+    <td VALIGN="top" width="20%"><a HREF="#sum">SumRandom</a></td>
+    <td VALIGN="top" width="80%">Sum and/or product of random numbers</td>
+  </tr>
+  <tr>
+    <td VALIGN="top" width="20%"><a HREF="#mixed">MixedRandom</a></td>
+    <td VALIGN="top" width="80%">Mixture of random numbers</td>
+  </tr>
+</table>
+
+<p>Each of these classes has the following member functions &nbsp; </p>
+
+<table BORDER="0" WIDTH="100%">
+  <tr>
+    <td VALIGN="TOP"><tt>Real Next()</tt></td>
+    <td VALIGN="TOP">Get a new random number</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP"><tt>char* Name()</tt></td>
+    <td VALIGN="TOP">Name of the distribution</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP"><tt>ExtReal Mean()</tt></td>
+    <td VALIGN="TOP">Mean of the distribution</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP"><tt>ExtReal Variance()</tt></td>
+    <td VALIGN="TOP">Variance of the distribution</td>
+  </tr>
+</table>
+
+<p>These 4 functions are declared <i>virtual</i> so it is easy to write simulation
+programs that can be run with different distributions. </p>
+
+<p><i>Real</i> is typedefed to be either <i>float</i> or <i>double</i>. See <a
+HREF="#customising">customising</a>. Note that <tt>Next()</tt> always returns a <i>Real</i>
+even for discrete distributions. </p>
+
+<p><a HREF="#extreal">ExtReal</a> is a class which is, in effect either a <i>Real</i> or
+one of the following: <i>PlusInfinity</i>, <i>MinusInfinity</i>, <i>Indefinite</i> or <i>Missing</i>.
+I use <i>ExtReal</i> so that I can return infinite or indefinite values for the mean or
+variance of a distribution.</p>
+
+<p>There are two classes for doing combinations and permutations.</p>
+
+<table BORDER="0" WIDTH="100%">
+  <tr>
+    <td width="25%"><a HREF="#permutation">RandomPermutation</a></td>
+    <td width="75%">Draw numbers without replacement</td>
+  </tr>
+  <tr>
+    <td width="25%"><a HREF="#combination">RandomCombination</a></td>
+    <td width="75%">Draw numbers without replacement and sort</td>
+  </tr>
+</table>
+
+<p>There are three classes for&nbsp;generating random numbers where we want to 
+vary the parameters at each call. It would be inefficient to use the previous 
+classes since you would need to set up a random number object at each call.</p>
+
+<table BORDER="0" WIDTH="100%">
+  <tr>
+    <td VALIGN="top" width="20%"><a href="#VariPoisson">VariPoisson</a></td>
+    <td VALIGN="top" width="80%">Poisson distribution</td>
+  </tr>
+  <tr>
+    <td VALIGN="top" width="20%"><a href="#VariBinomial">VariBinomial</a></td>
+    <td VALIGN="top" width="80%">Binomial distribution</td>
+  </tr>
+  <tr>
+    <td VALIGN="top" width="20%"><a href="#VariLogNormal">VariLogNormal</a></td>
+    <td VALIGN="top" width="80%">Log normal distribution</td>
+  </tr>
+</table>
+
+<p>The following classes are for accessing different uniform random number 
+generators</p>
+
+<table BORDER="0" width="100%">
+  <tr>
+    <td VALIGN="TOP" width="20%"><a href="#lgm">LGM_simple</a></td>
+    <td VALIGN="TOP" width="80%">Lewis-Goodman-Miller generator</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP" width="20%"><a href="#lgm_mixed">LGM_mixed</a></td>
+    <td VALIGN="TOP" width="80%">Lewis-Goodman-Miller generator with Marsaglia 
+    mixing</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP" width="20%"><a href="#wh">WH</a></td>
+    <td VALIGN="TOP" width="80%">Wichmann Hill generator</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP" width="20%"><a href="#fm">FM</a></td>
+    <td VALIGN="TOP" width="80%">Fishman Moore generator</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP" width="20%"><a href="#mother">MotherOfAll</a></td>
+    <td VALIGN="TOP" width="80%">Marsaglia's mother of all generators</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP" width="20%"><a href="#mult_with_carry">MultWithCarry</a></td>
+    <td VALIGN="TOP" width="80%">Marsaglia's multiply with carry generator</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP" width="20%"><a href="#mt">MT</a></td>
+    <td VALIGN="TOP" width="80%">Mersenne Twister generator</td>
+  </tr>
+</table>
+
+<p>Further details of all these classes including the constructors are given below.</p>
+
+<p>&nbsp;</p>
+
+<p>A reference for the kind of methods used in this program is <i>Automatic 
+Nonuniform Random Variate Generation</i> by Wolfgang H<font face="Times New Roman">ö</font>rmann, 
+Josef Leydold and Gerhard Derflinger published by Springer in 2003.</p>
+
+<p>&nbsp;</p>
+<h2><a NAME="starting"></a>Getting started</h2>
+
+<h3><a NAME="customising"></a>Customising</h3>
+
+<p>The file include.h sets a variety of options including several compiler dependent
+options. You may need to edit include.h to get the options you require. If you are using a
+compiler different from one I have worked with you may have to set up a new section in
+include.h appropriate for your compiler. </p>
+
+<p>Borland,  Gnu, and Microsoft are recognised automatically. If none of 
+these are recognised a default set of options is used. These are fine for Intel
+and Sun C++. If you using a compiler I don't know about, you may have to write a new set
+of options. </p>
+
+<p>There is an option in include.h for selecting whether you use <i>compiler supported
+exceptions</i>, <i>simulated exceptions</i>, or <i>disable exceptions</i>. Use the option for 
+<i>compiler
+supported exceptions</i> if and only if you have set the option on your compiler to recognise
+exceptions. <i>Disabling exceptions</i> sometimes helps with compilers that are incompatible with
+my exception simulation scheme. The default is <i>compiler supported exceptions</i> 
+and I suggest you don't change this if you are using a modern compiler.
+&nbsp; </p>
+
+<table BORDER="1" WIDTH="100%">
+  <tr>
+    <td ALIGN="CENTER" WIDTH="100%">This version of <i>newran</i> does <i>not</i> do memory
+    clean-up with the <i>simulated</i> exceptions.</td>
+  </tr>
+</table>
+
+<p>Activate the appropriate statement to make the element type <i>Real</i> to mean <i>float</i>
+or <i>double</i> (the default is <i>double</i> and I recommend you leave it as
+<i>double</i>).</p>
+
+<p>Activate the <i>standard</i> option if you want to use the form of include 
+statements specified in the standard.</p>
+
+<p>Activate the namespace option if you want the <i>newran</i> classes in be 
+placed in namespace <i>NEWRAN</i>.</p>
+
+<p>You may get a tiny increase in speed if your compiler has the <i>unsigned 
+int64</i> type and you enable the line that defines <i>HAS_INT64</i>.</p>
+
+<p>You may need to comment out the line defining <i>TypeDefException</i> if you 
+are using Borland Builder 6 in GUI mode.</p>
+
+<p>The other options are for my <i>newmat</i> matrix library and are not 
+relevant to <i>newran</i>.</p>
+
+<h3>Compiling</h3>
+
+<p>You will need to compile newran1.cpp, newran2.cpp, myexcept.cpp, simpstr.cpp, 
+myexcept.cpp and extreal.cpp and link the
+resulting object files to your programs. Your source files which access <i>newran</i> will
+need to have newran.h as an include file. </p>
+
+<h3>Compilers</h3>
+
+<p>I have tested newran03 with the following compilers (all PC ones in 32 bit console
+mode)</p>
+
+<table border="0" width="75%">
+  <tr>
+    <td width="50%" valign="top">Borland 5.5, 5.6</td>
+    <td width="50%" valign="top">OK</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">Microsoft  6.0, 7.0, 7.1,8</td>
+    <td width="50%" valign="top">OK</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">Open Watcom 1.4</td>
+    <td width="50%" valign="top">Test programs fail to compile</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">Sun CC 8?</td>
+    <td width="50%" valign="top">OK</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">Gnu G++ 3.4, 4.0,4.1</td>
+    <td width="50%" valign="top">OK</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">Intel for Windows 9</td>
+    <td width="50%" valign="top">OK</td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">Intel for Linux 9</td>
+    <td width="50%" valign="top">OK</td>
+  </tr>
+</table>
+
+<p>I have included make files for Borland 5.5, 5.6, Microsoft Visual C++, Intel 
+C++ for Windows and Linux, CC and Gnu G++ for compiling the 
+test and example programs. See <a href="#files">files</a>
+section. These have been generated with my <a href="genmake.htm">genmake</a> program. 
+There are notes on using these make files in the <a href="genmake.htm">genmake</a> 
+documentation (copy from <a href="http://www.robertnz.net">http://www.robertnz.net</a>).</p>
+<h3>Documentation</h3>
+<p>This is the main documentation file. However, I have also started including 
+comments in the code that can be interpreted by the
+<a target="_blank" href="http://www.doxygen.org">Doxygen</a> documentation 
+system. I suggest you set Doxygen options</p>
+<ul>
+	<li>JAVADOC_AUTOBRIEF = YES</li>
+	<li>EXTRACT_ALL = YES</li>
+	<li>ALPHABETICAL_INDEX = YES</li>
+</ul>
+<p>&nbsp;</p>
+
+<h2><a name="organisation"></a>Program organisation</h2>
+
+<h3>Setting up the random number generator</h3>
+
+<p>The random number generator needs to be set up at the beginning of your 
+program. This involves declaring a uniform random number generator, registering 
+it as the one to be used for generating your random numbers and setting up the 
+initial seed value.</p>
+
+<p>The seed is a block of data which the generator updates each time a new 
+random number is requested and uses to generate the new random number.</p>
+
+<p>The seed needs to be initiated before any random numbers are called. <i>
+Newran</i> lets you copy the value of the seed to disk at the end of your 
+program and reload it the next time your program runs so you get a new set of 
+random numbers for each run of your program (this won't work, of course if you 
+are running more than program using the random number generator at the same 
+time). Alternatively you can use a default value of the seed, in which case you 
+get the same set of random numbers each time. Or the program allows you to 
+update <i>part</i> of the seed at each run so you will probably get a new set of 
+numbers but there is a chance of getting a rerun of some of your old numbers.</p>
+
+<p>If you wish to use the default seed your program should begin like this:</p>
+
+<pre>   MotherOfAll urng;                    // declare uniform random number generator
+   Random::Set(urng);                   // set urng as generator to be used
+
+   Normal normal;                       // declare normal generator
+   for (int i = 1; i &lt;= 10; ++i)        // print 10 normal random numbers
+      cout &lt;&lt; setprecision(5) &lt;&lt; setw(10) &lt;&lt; normal.Next() &lt;&lt; endl;</pre>
+
+<p>Here we are using the <i>MotherOfAll</i> generator. See the section on
+<a href="#urng">uniform random number generators</a> for a description of all 
+the generators available in <i>newran</i>. Our program finishes with the code 
+for generating an printing 10 standard normal random numbers.</p>
+
+<p>If you want to vary the starting seed but don't want to use to process of 
+copying the seed to disk you can replace the first line with</p>
+
+<pre>&nbsp;&nbsp; MotherOfAll urng(s);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // declare uniform random number generator</pre>
+<p>where <i>s</i> is a <i>double</i> strictly between 0 and 1. You will need to 
+enter a new value of <i>s</i> each time your program is run.</p>
+<p>If you want to store the seed to disk use a program like</p>
+<pre>   // put the next four lines near the beginning of your main program so they get
+   // called only once
+
+   Random::SetDirectory(&quot;c:\\seed\\&quot;);  // set directory for seed control
+   MotherOfAll urng;                    // declare uniform random number generator
+   Random::Set(urng);                   // set urng as generator to be used
+   Random::CopySeedFromDisk(true);      // get seed information from disk
+
+   Normal normal;                       // declare normal generator
+   for (int i = 1; i &lt;= 10; ++i)        // print 10 normal random numbers
+      cout &lt;&lt; setprecision(5) &lt;&lt; setw(10) &lt;&lt; normal.Next() &lt;&lt; endl;</pre>
+
+<p>The first line declares the directory in which the seeds are to be stored. 
+You will need to create this directory and copy the files fm.txt, lgm.txt, 
+lgm_mixed.txt, mother.txt, mt19937.txt, multwc.txt, wh.txt from the newran 
+distribution files to this directory. My example is for MS Windows. Note the 
+double back slashes including the double back slash at the end. For Unix use 
+something like <tt>&quot;/home/robert/seed/&quot;</tt>. The 
+<tt>CopySeedFromDisk</tt> statement gets the seed data from disk. With the 
+argument <tt>true</tt> the seed data on disk will be automatically updated when 
+the random number generator's destructor is called as your program ends. If you don't want that use 
+the argument <tt>false</tt>. There is also a 
+<tt>CopySeedToDisk</tt> function that can used to update the seed data on disk. 
+See the <a href="#random">section about class <i>Random</i></a>.</p>
+
+<h3>Catching exceptions</h3>
+
+<p>If a function in <i>Newran</i> detects an error it will throw an exception. 
+It is important that your program can catch this exception - otherwise most 
+compilers return an incomprehensible error message. I suggest you surround your 
+main program by a <i>Try - Catch</i> block. See <i>nr_ex.cpp</i> as an example. 
+For more information on my use of exceptions see the <a href="nm_intro.htm">
+newmat</a> documentation on my website.</p>
+
+<h2><a name="testing"></a>Testing</h2>
+
+<p>There are three test programs and one example program.</p>
+
+<p>All these programs have a statement</p>
+
+<pre>   bool copy_seed_from_disk = false;</pre>
+
+<p>With this statement the random number generators use the default seed so that 
+the results can be compared with the sample outputs. Replace <i>false</i> by <i>
+true</i> to use seed values copied from disk.</p>
+
+
+<h3>Nr_ex</h3>
+
+
+<p>This example generates and prints 10 normal random numbers. You need file 
+nr_ex.cpp as well as the newran program files.</p>
+
+
+<h3>Tryrand</h3>
+
+<p>The files tryrand.cpp, tryrand1.cpp, tryrand2.cpp, tryrand3.cpp, 
+tryrand4.cpp, tryrand5.cpp, tryrand6.cpp, format.cpp, str.cpp, utility.cpp, test_out.cpp
+run the generators in the library and print histograms of the resulting distributions.
+Sample means and variances are also calculated and can be compared with the population
+values. The  results from Borland 5.5 are in tryrand.txt. Other compilers may 
+give different but still correct results. In particular, Microsoft C++ compilers 
+give different results when global optimisation is set. This is most likely due 
+to different round-off error but may also be due to different order of 
+evaluation of expressions. The appearance of the histograms in the output should 
+be similar to that in tryrand.txt and the statistical tests should still be 
+passed. I use <tt>*</tt> to denote statistical significance at the 5% level, <tt>**</tt> for 1% 
+and <tt>***</tt> for 0.1%. We are carrying out quite a lot of tests so you will see <tt>*</tt> 
+from time to time, <tt>**</tt> occasionally and <tt>***</tt> very occasionally. 
+The last column in the tests shows -log10 of the significance level. So 2 
+corresponds to 1% significance. One should suspect a problem if you see a value 
+of 4 or above or more than the occasional value of 2 or above. There are some notes in tryrand.txt for assessing the output.</p>
+
+<p>The test program tryrand.cpp includes a simple test for memory leaks. This is 
+valid for only some compilers. It seems to work for Borland C++ in console mode 
+but not for some versions of Gnu G++ or Microsoft C++.</p>
+
+<p>Edit tryrand.cpp to change the uniform random number generator used and to 
+decide whether to use the default starting value for the seed or read it from 
+disk. </p>
+
+<h3>Tryurng</h3>
+
+<p>The files tryurng.cpp, tryurng1.cpp,  format.cpp, str.cpp, 
+utility.cpp, test_out.cpp are for testing the uniform random number generators. 
+Edit tryurng.cpp to change the sample size and to decide whether to use the 
+default starting value for the seed or read it from disk. With the default 
+starting value for the seed and a sample size of 10 million you should get 
+identical results to those in tryurng.txt except for the times and memory 
+locations. I use <tt>*</tt> to denote statistical significance at the 5% level, <tt>**</tt> for 1% 
+and <tt>***</tt> for 0.1%. We are carrying out quite a lot of tests so you will see <tt>*</tt> 
+from time to time, <tt>**</tt> occasionally and <tt>***</tt> very occasionally. 
+The last column in the tests shows -log10 of the significance level. So 2 
+corresponds to 1% significance. One should suspect a problem if you see a value 
+of 4 or above or more than the occasional value of 2 or above.</p>
+
+<p>These tests are not intended to replace the 
+<a href="http://stat.fsu.edu/~geo/diehard.html">Diehard</a> tests - rather they are a 
+limited number of tests directed at the most significant bits of the random 
+number that allow me to vary the sample size and run in a 
+reasonable time and with a reasonable mount of memory. More comprehensive testing would 
+require a rather larger set of tests.</p>
+
+<p>With a sample size of 10 million all the generators pass the tests; with a 
+sample size of 100 million the stars come out for the first three generators. 
+The others pass with a sample size of 5000 million.</p>
+
+<p>Here are the details of the tests:</p>
+
+<table border="0" width="100%">
+  <tr>
+    <td width="20%">Mean</td>
+    <td width="80%">Test mean of numbers</td>
+  </tr>
+  <tr>
+    <td width="20%">Variance</td>
+    <td width="80%">Test variance of numbers</td>
+  </tr>
+  <tr>
+    <td width="20%">AutoCov 1</td>
+    <td width="80%">Test auto-covariance of adjacent numbers</td>
+  </tr>
+  <tr>
+    <td width="20%">Chi 4</td>
+    <td width="80%">Chi-squared test of uniformity of top 4 bits</td>
+  </tr>
+  <tr>
+    <td width="20%">Chi 8</td>
+    <td width="80%">Chi-squared test of uniformity of top 8 bits</td>
+  </tr>
+  <tr>
+    <td width="20%">Chi 16</td>
+    <td width="80%">Chi-squared test of uniformity of top 16 bits</td>
+  </tr>
+  <tr>
+    <td width="20%">MM 0-4-2</td>
+    <td width="80%">Marsaglia monkey of top 4 bits, 2 words at a time</td>
+  </tr>
+  <tr>
+    <td width="20%">MM 0-8-2</td>
+    <td width="80%">Marsaglia monkey of top 8 bits, 2 words at a time</td>
+  </tr>
+  <tr>
+    <td width="20%">MM 0-1-8</td>
+    <td width="80%">Marsaglia monkey of top bit, 8 words at a time</td>
+  </tr>
+  <tr>
+    <td width="20%">MM 0-1-16</td>
+    <td width="80%">Marsaglia monkey of top bit, 16 words at a time</td>
+  </tr>
+  <tr>
+    <td width="20%">MM sparse</td>
+    <td width="80%">Marsaglia sparse occupancy test of top bit, number of words 
+    depends on sample size</td>
+  </tr>
+</table>
+
+<p>For more details on the Marsaglia tests see &quot;Marsaglia, G. and Zaman, A., 
+1993, Monkey tests for random number generators, Computers and Mathematics with 
+Applications 26, 9, 1-10&quot;. You should be able to find a copy of this with a 
+<i>Google</i> search.</p>
+
+<h3>Geturng</h3>
+
+<p>The file geturng.cpp is for generating a file to be analysed with the 
+<a href="http://stat.fsu.edu/~geo/diehard.html">Diehard</a> 
+tests. Edit this file to select the generator and whether to use the full 32 
+bits from the generators or to assemble the words from the top 8 bits.</p>
+
+<h3>Test_lg</h3>
+
+<p>The file test_lg.cpp is for testing the log gamma function. Your output 
+should be similar to test_lg.txt but probably won't be identical. </p>
+
+<p>&nbsp;</p>
+
+<h2><a name="urng"></a>The uniform random number generators</h2>
+
+<p>You can choose from the generators described in this section. Ideally you 
+should repeat your simulations with more than one generator. My order of 
+preference - without any really good evidence about the first four - is</p>
+
+<ol>
+  <li><a href="#mother">Marsaglia's mother of all generators</a> (slower)</li>
+  <li><a href="#mt">Mersenne Twister generator</a></li>
+  <li><a href="#mult_with_carry">Marsaglia's multiply with carry generator</a></li>
+  <li><a href="#wh">Wichmann Hill generator</a> (slower)</li>
+  <li><a href="#lgm_mixed">Lewis-Goodman-Miller generator with Marsaglia mixing</a> 
+  (slower,&nbsp; for &lt;= 10 million calls)</li>
+  <li><a href="#fm">Fishman Moore generator</a> (for &lt;= 10 million calls)</li>
+  <li><a href="#lgm">Lewis-Goodman-Miller generator</a> (don't use)</li>
+</ol>
+
+<p>If you take the output from the generators as 32 bit words (use <tt>ulNext()</tt>) 
+then the first 4 generators pass the
+<a href="http://stat.fsu.edu/~geo/diehard.html">Diehard</a> tests. The last 3 
+generators generate 31 bit words with the lowest order bit in a 32 bit word 
+being set to zero. If you ignore the Diehard tests that use the lowest order bit 
+then these generators also pass. If you generate the data for the Diehard tests 
+by taking only the top 8 bits from each word from the generator and assembling 
+them into 32 bit words then the first 6 generators pass but the last one fails.</p>
+
+<p>If you apply the simple tests in my <i>tryurng</i> program all generators 
+pass with 10 million words from the generator. With 100 million calls the last 
+three fail but with the mixed LGM generator doing better than the other two. The 
+first four pass with 5000 million calls.</p>
+
+<p>Each of the uniform random number generator classes has the following member functions &nbsp; </p>
+
+<table BORDER="0" WIDTH="100%">
+  <tr>
+    <td VALIGN="TOP">constructor<tt>(Real seed)</tt></td>
+    <td VALIGN="TOP">Constructor with optional starting seed</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP"><tt>Real Next()</tt></td>
+    <td VALIGN="TOP">Get a new random number</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP"><tt>unsigned long ulNext()</tt></td>
+    <td VALIGN="TOP">New random number as unsigned long</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP"><tt>char* Name()</tt></td>
+    <td VALIGN="TOP">Name of the generator</td>
+  </tr>
+  </table>
+
+<h3>&nbsp;<a name="lgm"></a>Lewis-Goodman-Miller generator</h3>
+
+<p>This is included for historical interest only - do not use this generator for 
+serious work. You can find a description of it in <i>Numerical Recipes in C</i>
+by Press, Flannery, Teukolsky, Vetterling published by the Cambridge University 
+Press.</p>
+<h3><a name="lgm_mixed"></a>Lewis-Goodman-Miller generator with Marsaglia mixing</h3>
+<p>This was the generator used in <i>newran02</i>. It uses Marsaglia's mixing 
+method to improve the performance of the Lewis-Goodman Miller generator. 
+Alternate numbers from the generator are used for the actual random number and 
+the mixing process. Do not use this generator if your simulation requires more 
+than 10 million calls to the generator.&nbsp; </p>
+<h3><a name="wh"></a>Wichmann Hill generator</h3>
+<p>See B.A. Wichmann and I. D. Hill (1982). Algorithm AS 183: An Efficient and 
+Portable Pseudo-random Number Generator, Applied Statistics, 31, 188-190; 
+Remarks: 34, p.198 and 35, p.89. </p>
+<h3><a name="fm"></a>Fishman Moore generator</h3>
+<p>See G.S. Fishman and L.R. Moore (1986), An exhaustive analysis of 
+multiplicative congruential random number generators with modulus 2^31-1, SIAM J 
+Sci. Stat. Comput., 7, pp. 24-45. Do not use this generator if your simulation 
+requires more than 10 million calls to the generator.</p>
+<h3><a name="mother"></a>Marsaglia's mother of all generators</h3>
+<p>I copied this code from <a href="http://www.taygeta.com/random.xml">
+http://www.taygeta.com/random.xml</a>.</p>
+<h3><a name="mult_with_carry"></a>Marsaglia's multiply with carry generator</h3>
+<p>Marsaglia described this method in</p>
+<p class = "small">From: George Marsaglia &lt;geo@stat.fsu.edu&gt;<br>
+Subject: A very fast and very good random number generator<br>
+Date: 1998/01/30</p>
+<p>See
+<a href="http://groups.google.com/groups?hl=en&lr=&ie=UTF-8&selm=34D263C0.354E67F0@stat.fsu.edu">
+http://groups.google.com/groups?hl=en&amp;lr=&amp;ie=UTF-8&amp;selm=34D263C0.354E67F0%40stat.fsu.edu</a></p>
+<h3><a name="mt"></a>Mersenne Twister generator </h3>
+
+<p>I copied this code from
+<a href="http://www.math.keio.ac.jp/matumoto/emt.html">
+http://www.math.keio.ac.jp/matumoto/emt.html</a>.</p>
+
+<p>&nbsp;</p>
+
+<h2><a NAME="description"></a>Descriptions of the classes to be
+accessed by the user:</h2>
+
+<h3><a NAME="random"></a>Random:</h3>
+
+<p>This is the base of the other random number classes. I suggest you don't use 
+it directly. There are four static functions for initialising the random number 
+generator and manipulating the seeds.</p>
+
+<table BORDER="0" WIDTH="100%">
+  <tr>
+    <td VALIGN="TOP"><tt>void Random::Set(Random&amp; r)</tt></td>
+    <td VALIGN="TOP">Select the uniform random number generator</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP"><tt>void Random::CopySeedFromDisk(bool update=false)</tt></td>
+    <td VALIGN="TOP">Copy the seed from disk (update=true to copy to seed to 
+    disk when the generator is destructed)</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP"><tt>void Random::CopySeedToDisk()</tt></td>
+    <td VALIGN="TOP">Copy the current value of the seed to disk</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP"><tt>void Random::SetDirectory(const char* dir)</tt></td>
+    <td VALIGN="TOP">Directory where seeds are to be held (terminate with / or 
+    \\)</td>
+  </tr>
+  </table>
+
+<h3><a NAME="uniform"></a>Uniform:</h3>
+
+<p>Return a uniform random number from the range (0, 1). The constructor has no
+parameters. For example </p>
+
+<pre>&nbsp;&nbsp; Uniform U;
+&nbsp;&nbsp; for (int i=0; i&lt;100; i++) cout &lt;&lt; U.Next() &lt;&lt; &quot;\n&quot;;</pre>
+
+<p>prints a column of 100 numbers drawn from a uniform distribution. </p>
+
+<h3><a NAME="constant"></a>Constant:</h3>
+
+<p>This returns a constant. The constructor takes one <i>Real</i> parameter; the value of
+the constant to be returned. So </p>
+
+<pre>&nbsp;&nbsp; Constant C(5.5);
+&nbsp;&nbsp; cout &lt;&lt; C.Next() &lt;&lt; &quot;\n&quot;;</pre>
+
+<p>prints 5.5. </p>
+
+<h3><a NAME="exponential"></a>Exponential:</h3>
+
+<p>This generates random numbers with density <tt>exp(-x)</tt> for <tt>x&gt;=0</tt>. The
+constructor takes no arguments. </p>
+
+<pre>&nbsp;&nbsp; Exponential E;
+&nbsp;&nbsp; for (int i=0; i&lt;100; i++) cout &lt;&lt; E.Next() &lt;&lt; &quot;\n&quot;;</pre>
+
+<h3><a NAME="cauchy"></a>Cauchy:</h3>
+
+<p>Generates random numbers from a standard Cauchy distribution. The constructor takes no
+parameters. </p>
+
+<pre>&nbsp;&nbsp; Cauchy C;
+&nbsp;&nbsp; for (int i=0; i&lt;100; i++) cout &lt;&lt; C.Next() &lt;&lt; &quot;\n&quot;;</pre>
+
+<h3><a NAME="normal"></a>Normal:</h3>
+
+<p>Generates standard normal random numbers. The constructor has no arguments. This class
+has been augmented to ensure only one copy of the arrays generated by the constructor
+exist at any given time. That is, if the constructor is called twice (before the
+destructor is called) only one copy of the arrays is generated. </p>
+
+<pre>&nbsp;&nbsp; Normal Z;
+&nbsp;&nbsp; for (int i=0; i&lt;100; i++) cout &lt;&lt; Z.Next() &lt;&lt; &quot;\n&quot;;</pre>
+
+<h3><a NAME="chisq"></a>ChiSq:</h3>
+
+<p>Non-Central chi-squared distribution. The method uses ChiSq1 to generate the
+non-central part and Gamma2 or Exponential to generate the central part. The constructor
+takes as arguments the number of degrees of freedom <tt>(&gt;=1)</tt> and the
+non-centrality parameter (omit if zero). </p>
+
+<pre>&nbsp;&nbsp; int df = 10; Real noncen = 2.0;
+&nbsp;&nbsp; ChiSq CS(df, noncen);
+&nbsp;&nbsp; for (int i=0; i&lt;100; i++) cout &lt;&lt; CS.Next() &lt;&lt; &quot;\n&quot;;</pre>
+
+<h3><a NAME="gamma"></a>Gamma:</h3>
+
+<p>Gamma distribution. The constructor takes the shape parameter as argument. Uses Gamma1,
+Gamma2 or Exponential. </p>
+
+<pre>&nbsp;&nbsp; Real shape = 0.75;
+&nbsp;&nbsp; Gamma G(shape);
+&nbsp;&nbsp; for (int i=0; i&lt;100; i++) cout &lt;&lt; G.Next() &lt;&lt; &quot;\n&quot;;</pre>
+
+<h3><a NAME="pareto"></a>Pareto:</h3>
+
+<p>Pareto distribution. The constructor takes the shape parameter as argument. I follow
+the definition of Kotz and Johnson's <i>Continuous univariate distributions 1</i>, chapter
+19, page 234, with <i>k</i> = 1. The generator uses a power transform of a uniform random
+number. </p>
+
+<pre>&nbsp;&nbsp; Real shape = 0.75;
+&nbsp;&nbsp; Pareto P(shape);
+&nbsp;&nbsp; for (int i=0; i&lt;100; i++) cout &lt;&lt; P.Next() &lt;&lt; &quot;\n&quot;;</pre>
+
+<h3><a NAME="poisson"></a>Poisson:</h3>
+
+<p>Poisson distribution: uses Poisson1 or Poisson2. Constructor takes the mean as its
+argument. </p>
+
+<pre>&nbsp;&nbsp; Real mean = 5.0;
+&nbsp;&nbsp; Poisson P(mean);
+&nbsp;&nbsp; for (int i=0; i&lt;100; i++) cout &lt;&lt; (int)P.Next() &lt;&lt; &quot;\n&quot;;</pre>
+
+<h3><a NAME="binomial"></a>Binomial:</h3>
+
+<p>Binomial distribution: uses Binomial1 or Binomial2. Constructor takes <i>n</i> and <i>p</i>
+as its arguments. </p>
+
+<pre>&nbsp;&nbsp; int n = 50; Real p = 0.25;
+&nbsp;&nbsp; Binomial B(n, p);
+&nbsp;&nbsp; for (int i=0; i&lt;100; i++) cout &lt;&lt; (int)B.Next() &lt;&lt; &quot;\n&quot;;</pre>
+
+<h3><a NAME="negativebinomial"></a>NegativeBinomial:</h3>
+
+<p>Negative binomial distribution. Constructor takes <i>N</i> and <i>P</i> as its
+arguments. I use the notation of Kotz and Johnson's <i>Discrete distributions</i>. Some
+people use <i>p</i> = 1/(<i>P</i>+1) in place of the second parameter. </p>
+
+<pre>&nbsp;&nbsp; Real N = 12.5; Real P = 3.0;
+&nbsp;&nbsp; NegativeBinomial NB(N, P);
+&nbsp;&nbsp; for (int i=0; i&lt;100; i++) cout &lt;&lt; (int)NB.Next() &lt;&lt; &quot;\n&quot;;</pre>
+
+<h3><a name="stable"></a>Stable:</h3>
+
+<p>Stable family of distributions. I use the method of Chambers, J.M., Mallows, C. &amp; Stuck, B.W. (1976): A Method for simulating stable random 
+variables. <i>Journal of the American Statistical Association</i> <b>71</b>, 
+340-344.</p>
+
+<p>The constructor takes <i>alpha</i>, <i>beta</i> 
+and <i>notation</i> as its arguments where <tt>0 &lt; </tt><i>alpha</i><tt> &#8804; 2</tt>,
+<tt>-1 &#8804; </tt><i>beta</i><tt> &#8804; 1</tt> and <i>notation</i> is one of <i>Stable::Kalpha</i>, <i>
+Stable::Standard</i> or <i>Stable::Chambers</i>.</p>
+
+<pre>&nbsp;&nbsp; Real alpha = 0.75, beta = 0.5;
+&nbsp;&nbsp; Stable stable(alpha, beta, Stable::Chambers);
+&nbsp;&nbsp; for (int i=0; i&lt;100; i++) cout &lt;&lt; stable.Next() &lt;&lt; &quot;\n&quot;;</pre>
+
+<p>The method becomes unreliable for small values of <i>alpha</i>. Best keep <i>
+alpha</i><tt> &gt; 0.2</tt>.</p>
+
+<p>The <i>notation</i> parameter determines the version of the definition of the 
+stable distribution. Here are the characteristic functions corresponding to the 
+first two versions (<tt><font face="Courier New">&#945; </font></tt> <font face="Courier New">&#8800;</font><tt> 1</tt>).</p>
+
+<p><i>Kalpha</i>: This is the version used by Chambers et al at the beginning of 
+their paper.</p>
+
+<pre>           <tt><font face="Courier New">&#945;</font></tt>
+   exp[-|u|  exp{<font face="Courier New">½ &#960;</font> i <font face="Courier New">&#946;</font> k(<tt><font face="Courier New">&#945;</font></tt>) sign(u)}]</pre>
+<p>where <tt>k(<font face="Courier New">&#945;</font>) = 1 - |1 - 
+<font face="Courier New">&#945;</font>|.</tt></p>
+
+<p><i>Standard</i>: this is the notation most commonly used</p>
+
+<pre>           <tt><font face="Courier New">&#945;</font></tt>
+   exp[-|u|  {1 - i <font face="Courier New">&#946;</font> tan(<font face="Courier New">½ &#960;</font> <font face="Courier New">&#946;</font>) sign(u)}]</pre>
+<p><i>Chambers</i>: The Chambers version is the same as the Standard version except that
+<font face="Courier New">&#946;</font><tt> tan(</tt><font face="Courier New">½ &#960;</font><tt> <font face="Courier New">&#945;</font>)</tt>
+is subtracted from the result (<tt><font face="Courier New">&#945;</font>
+<font face="Courier New">&#8800;</font> 1</tt>). 
+This is the version used in the <i>S-plus</i> statistical package.</p>
+
+<p>In all cases the same version is used when <tt><font face="Courier New">&#945;
+</font>= 1:</tt></p>
+
+<pre>   exp[-|u| {1 + 2 i <font face="Courier New">&#946;</font> ln|u| sign(u) / <font face="Courier New">&#960;</font>}]</pre>
+
+<p>The notation is irrelevant when <tt><font face="Courier New">&#945; </font>= 1 or 2</tt> or when
+<font face="Courier New">&#946; </font> <tt>= 0</tt> and in these cases the notation argument can be omitted.</p>
+
+<h3><a NAME="posgenx"></a>PosGenX:</h3>
+
+<p>This uses an arbitrary density for generating random
+numbers from that density.</p>
+
+<p>PosGenX supposes that</p>
+
+<ul>
+  <li>the density is non-zero only for non-negative values of its argument;</li>
+  <li>the density integrates to 1;</li>
+  <li>the density in monotonically non-increasing&nbsp; (i.e. decreasing or 
+  level) for all non-negative values of the argument;</li>
+  <li>the density is not infinite at 0 (ideally it is continuous from the right 
+  at 0);</li>
+  <li>density drops to exactly zero for large enough argument.</li>
+</ul>
+
+<p>Suppose <tt>Real pdf(Real)</tt> is the density. Then use <tt>pdf</tt>
+as the argument of the constructor. For example </p>
+
+<pre>&nbsp;&nbsp; PosGenX P(pdf);
+&nbsp;&nbsp; for (int i=0; i&lt;100; i++) cout &lt;&lt; P.Next() &lt;&lt; &quot;\n&quot;;</pre>
+
+<table BORDER="1" WIDTH="100%">
+  <tr>
+    <td WIDTH="100%">Note that the probability density <i>pdf</i> must drop to exactly 0 for
+    the argument large enough. For example, include a statement in the program for <i>pdf</i>
+    that, if the value is less than 1.0E-15, then return 0.</td>
+  </tr>
+</table>
+
+<h3><a NAME="symgenx"></a>SymGenX:</h3>
+
+<p>SymGenX supposes that</p>
+
+<ul>
+  <li>the density is symmetric about 0 (only non-negative values are used);</li>
+  <li>the density integrates to 1;</li>
+  <li>the density in monotonically non-increasing&nbsp; (i.e. decreasing or 
+  level) for all non-negative values of the argument;</li>
+  <li>the density is not infinite at 0 (ideally it is continuous at 0);</li>
+  <li>density drops to exactly zero for large enough argument.</li>
+</ul>
+
+<p>This corresponds to PosGenX for symmetric distributions. <br>
+&nbsp; </p>
+
+<table BORDER="1" WIDTH="100%">
+  <tr>
+    <td WIDTH="100%">Note that the probability density <i>pdf</i> must drop to exactly 0 for
+    the argument large enough. For example, include a statement in the program for <i>pdf</i>
+    that, if the value is less than 1.0E-15, then return 0.</td>
+  </tr>
+</table>
+
+<h3><a NAME="asymgenx"></a>AsymGenX:</h3>
+
+<p>Corresponds to PosGenX for unimodal distributions.</p>
+
+<p>AsymGenX supposes that</p>
+
+<ul>
+  <li>the density is unimodel (monotonically non-decreasing to the left of the 
+  mode and monotonically non-increasing to the right of the mode).</li>
+  <li>the density integrates to 1;</li>
+  <li>the density is not infinite at the mode (ideally it is continuous at the 
+  mode);</li>
+  <li>density drops to exactly zero for large enough argument (large positive 
+  and large negative).</li>
+</ul>
+
+<p>The arguments of the constructor are the name of the density function and the 
+location of the mode.</p>
+
+<pre>&nbsp;&nbsp; Real pdf(Real);
+&nbsp;&nbsp; Real mode;
+&nbsp;&nbsp; .....
+&nbsp;&nbsp; AsymGenX X(pdf, mode);
+&nbsp;&nbsp; for (int i=0; i&lt;100; i++) cout &lt;&lt; X.Next() &lt;&lt; &quot;\n&quot;;</pre>
+
+<table BORDER="1" WIDTH="100%">
+  <tr>
+    <td WIDTH="100%">Note that the probability density <i>pdf</i> must drop to exactly 0 for
+    the argument large (large positive and large negative) enough. For example, include a
+    statement in the program for <i>pdf</i> that, if the value is less than 1.0E-15, then
+    return 0.</td>
+  </tr>
+</table>
+
+<h3><a NAME="posgen"></a>PosGen:</h3>
+
+<p>PosGen is not used directly. It is used as a base class for generating a random number
+from an arbitrary probability density <tt>p(x)</tt>. <tt>p(x)</tt> must be non-zero only
+for <tt>x&gt;=0</tt>, be monotonically decreasing for <tt>x&gt;=0</tt>, and be finite. For
+example, <tt>p(x)</tt> could be <tt>exp(-x)</tt> for <tt>x&gt;=0</tt>. </p>
+
+<p>The method is to cover the density in a set of rectangles of equal area as in the
+diagram (indicated by <tt>---</tt>). </p>
+
+<pre class="small">&nbsp;&nbsp; <b>|
+</b>&nbsp;&nbsp; <b>x</b>--------<b>
+</b>&nbsp;&nbsp; <b>|xx</b>      |
+&nbsp;&nbsp; <b>|</b>&nbsp; <b>xx</b>&nbsp;&nbsp;&nbsp; |
+&nbsp;&nbsp; <b>|</b>&nbsp;&nbsp;&nbsp; <b>xxx</b> |
+&nbsp;&nbsp; <b>|</b>.......<b>xxx</b>---------
+&nbsp;&nbsp; <b>|</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | <b>xxxx</b>&nbsp;&nbsp;&nbsp;&nbsp; |
+&nbsp;&nbsp; <b>|</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp; <b>xxxx</b> |
+&nbsp;&nbsp; <b>|</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |.........<b>xxxxx</b>------------
+&nbsp;&nbsp; <b>|</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp; <b>xxxxx</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
+&nbsp;&nbsp; <b>|</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>xxxxxx</b> |
+&nbsp;&nbsp; <b>|</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |..............<b>xxxxxx</b>----------------------
+&nbsp;&nbsp; <b>|</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp; <b>xxxxxxx</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
+&nbsp;&nbsp; <b>|</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>xxxxxxx</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
+&nbsp;&nbsp; <b>|</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>xxxxxxxx</b>|
+&nbsp;&nbsp; <b>+===========================================================================</b></pre>
+
+<p>The numbers are generated by generating a pair of numbers uniformly distributed over
+these rectangles and then accepting the <i>X</i> coordinate as the next random number if
+the pair corresponds to a point below the density function. The acceptance can be done in
+two stages, the first being whether the number is below the dotted line. This means that
+the density function need be checked only very occasionally and on the average only just
+over 3 uniform random numbers are required for each of the random numbers produced by this
+generator. </p>
+
+<p>See PosGenX or Exponential for the method of deriving a class to generate random
+numbers from a given distribution. <br>
+&nbsp; </p>
+
+<table BORDER="1" WIDTH="100%">
+  <tr>
+    <td WIDTH="100%">Note that the probability density <i>p(x)</i> must drop to exactly 0 for
+    the argument, <i>x</i>, large enough. For example, include a statement in the program for <i>p(x)</i>
+    that, if the value is less than 1.0E-15, then return 0.</td>
+  </tr>
+</table>
+
+<h3><a NAME="symgen"></a>SymGen:</h3>
+
+<p>SymGen is a modification of PosGen for unimodal distributions symmetric about the
+origin, such as the standard normal. </p>
+
+<h3><a NAME="asymgen"></a>AsymGen:</h3>
+
+<p>A general random number generator for unimodal distributions following the method used
+by PosGen. The constructor takes one argument: the location of the mode of the
+distribution. </p>
+
+<h3><a NAME="discretegen"></a>DiscreteGen:</h3>
+
+<p>This is for generating random numbers taking just a finite number of values. There are
+two alternative forms of the constructor: </p>
+
+<pre>&nbsp;&nbsp; DiscreteGen D(n,prob);
+&nbsp;&nbsp; DiscreteGen D(n,prob,val);</pre>
+
+<p>where <tt>n</tt> is an integer giving the number of values, <tt>prob</tt> a Real array
+of length <tt>n</tt> giving the probabilities and <tt>val</tt> a Real array of length <tt>n</tt>
+giving the set of values that are generated. If <tt>val</tt> is omitted the values are <tt>0,1,...,n-1</tt>.
+</p>
+
+<p>The method requires two uniform random numbers for each number it produces. This method
+is described by Kronmal and Peterson, <i>American Statistician</i>, 1979, Vol 33, No 4,
+pp214-218. </p>
+
+<h3><a NAME="sum"></a>SumRandom:</h3>
+
+<p>This is for building a random number generator as a linear or multiplicative
+combination of existing random number generators. Suppose <tt>RV1</tt>, <tt>RV2</tt>, <tt>RV3</tt>,
+<tt>RV4</tt> are random number generators defined with constructors given above and <tt>r1</tt>,
+<tt>r2</tt>, <tt>r0</tt> are Reals and <tt>i1</tt>, <tt>i3</tt> are integers. </p>
+
+<p>Then the generator <tt>S</tt> defined by something like </p>
+
+<pre>&nbsp;&nbsp; SumRandom S = RV1(i1)*r1 - RV2*r2 + RV3(i3)*RV4 + r0;</pre>
+
+<p>has the obvious meaning. <tt>RV1(i1)</tt> means that the sum of <tt>i1</tt> independent
+values from <tt>RV1</tt> should be used. Note that <tt>RV1*RV1</tt> means the product of
+two independent numbers generated from <tt>RV1</tt>. Remember that <tt>SumRandom</tt> is
+slow if the number of terms or copies is large. I support the four arithmetic operators <tt>+</tt>,
+<tt>-</tt>, <tt>*</tt> and <tt>/</tt> but cannot calculate the means and variances if you
+divide by a random variable. </p>
+
+<p>Use <tt>SumRandom</tt> to quickly set up simple combinations of the existing
+generators. But if the combination is going to be used extensively, then it is probably
+better to write a new class to do this. </p>
+
+<p>Example: <i>normal</i> with mean = 10, standard deviation = 5: </p>
+
+<pre>&nbsp;&nbsp; Normal N;
+&nbsp;&nbsp; SumRandom Z = 10 + 5 * N;
+&nbsp;&nbsp; for (int i=0; i&lt;100; i++) cout &lt;&lt; Z.Next() &lt;&lt; &quot;\n&quot;;</pre>
+
+<p>Example: <i>F</i> distribution with <i>m</i> and <i>n</i> degrees of freedom: </p>
+
+<pre>&nbsp;&nbsp; int m, n;
+&nbsp;&nbsp; ... put values in m and n
+&nbsp;&nbsp; ChiSq Num(m); ChiSq Den(n);
+&nbsp;&nbsp; SumRandom F = (double)n/(double)m * Num / Den;
+&nbsp;&nbsp; for (int i=0; i&lt;100; i++) cout &lt;&lt; F.Next() &lt;&lt; &quot;\n&quot;;</pre>
+
+<h3><a NAME="mixed"></a>MixedRandom:</h3>
+
+<p>This is for mixtures of distributions. Suppose <tt>rv1</tt>, <tt>rv2</tt>, <tt>rv3</tt>
+are random number generators and <tt>p1</tt>, <tt>p2</tt>, <tt>p3</tt> are Reals summing
+to 1. Then the generator <tt>M</tt> defined by </p>
+
+<pre>&nbsp;&nbsp; MixedRandom M = rv1(p1) + rv2(p2) + rv3(p3);</pre>
+
+<p>produces a random number generator with selects its next random number from <tt>rv1</tt>
+with probability <tt>p1</tt>, <tt>rv2</tt> with probability <tt>p2</tt>, <tt>rv3</tt> with
+probability <tt>p3</tt>. </p>
+
+<p>Alternatively one can use the constructor </p>
+
+<pre>&nbsp;&nbsp; MixedRandom M(n, prob, rv);</pre>
+
+<p>where <tt>n</tt> is the number of distributions in the mixture, <tt>prob</tt> the Real
+array of probabilities, <tt>rv</tt> an array of pointers to random variables. </p>
+
+<p>Normal with outliers: </p>
+
+<pre>&nbsp;&nbsp; Normal N; Cauchy C;
+&nbsp;&nbsp; MixedRandom Z = N(0.9) + C(0.1);
+&nbsp;&nbsp; for (int i=0; i&lt;100; i++) cout &lt;&lt; Z.Next() &lt;&lt; &quot;\n&quot;;</pre>
+
+<p>or: </p>
+
+<pre>&nbsp;&nbsp; Normal N;
+&nbsp;&nbsp; MixedRandom Z = N(0.9) + (10*N)(0.1);
+&nbsp;&nbsp; for (int i=0; i&lt;100; i++) cout &lt;&lt; Z.Next() &lt;&lt; &quot;\n&quot;;</pre>
+
+<h3><a NAME="permutation"></a>RandomPermutation:</h3>
+
+<p>To draw <tt>M</tt> numbers without replacement from <tt>start, start+1, ..., start+N-1</tt>
+use </p>
+
+<pre>&nbsp;&nbsp; RandomPermutation RP;
+&nbsp;&nbsp; RP.Next(N, M, p, start);</pre>
+
+<p>where <tt>p</tt> is an <tt>int*</tt> pointing to an array of length <tt>M</tt> or
+longer. Results are returned to that array. </p>
+
+<pre>&nbsp;&nbsp; RP.Next(N, p, start);</pre>
+
+<p>assumes <tt>M = N</tt>. The parameter, <tt>start</tt>
+has a default value of 0. </p>
+
+<p>The method is rather inefficient if <tt>N</tt> is very large and <tt>M</tt> is much
+smaller. </p>
+
+<h3><a NAME="combination"></a>RandomCombination:</h3>
+
+<p>To draw <tt>M</tt> numbers without replacement from <tt>start, start+1, ..., start+N-1</tt>
+and then sort use </p>
+
+<pre>&nbsp;&nbsp; RandomCombination RC;
+&nbsp;&nbsp; RC.Next(N, M, p, start);</pre>
+
+<p>where <tt>p</tt> is an <tt>int*</tt> pointing to an array of length <tt>M</tt> or
+longer. Results are returned to that array. </p>
+
+<pre>&nbsp;&nbsp; RC.Next(N, p, start);</pre>
+
+<p>assumes <tt>M = N</tt>. The parameter, <tt>start</tt>
+has a default value of 0. </p>
+
+<p>The method is rather inefficient if <tt>N</tt> is large. A better approach for large <tt>N</tt>
+would be to generate the sorted combination directly. This would also provide a better way
+of doing permutations with large <tt>N</tt>, small <tt>M</tt>.</p>
+
+<h3><a name="VariPoisson"></a>VariPoisson</h3>
+
+<p>Use this class if you want to generate a Poisson random variable but you&nbsp; 
+want to change the parameter  frequently, so using the 
+Poisson class would be inefficient. There are two member functions</p>
+
+<pre>   int VariPoisson::iNext(Real mu);
+   Real VariPoisson::Next(Real mu);</pre>
+<p>which return a new Poisson random number with mean <TT>mu</TT>. To generate 
+100 Poisson random numbers with means 1,2,...,100 use the following program</p>
+<pre>   VariPoisson VP;
+   for (int i = 1; i &lt;= 100; ++i)
+   {
+      Real mu = i;
+      cout &lt;&lt; VP.iNext(mu) &lt;&lt; end;
+   }</pre>
+<p>The constructor is slow so put it outside any loop. The individual 
+calls to <TT>iNext</TT> should be quite fast. The method is approximate for <TT>mu &gt;= 300.</TT> The 
+constructor is not in any class hierarchy and <TT>iNext</TT> is not virtual.</p>
+<p>This class is somewhat beta-ish and may change in a future release of <i>
+newran</i>.</p>
+
+<h3><a name="VariBinomial"></a>VariBinomial</h3>
+
+<p>Use this class if you want to generate a Binomial random variable but you&nbsp; 
+want to change the parameters of the  frequently, so using the 
+Binomial class would be inefficient. There are two member functions</p>
+
+<pre>   int VariBinomial::iNext(int n, Real p);
+   Real VariBinomial::Next(int n, Real p);</pre>
+<p>which returns a new Binomial random number with number of trials <tt>n</tt> and 
+probability of success <tt>p</tt>. To generate 
+100 Binomial random numbers with <tt>n</tt> = 1,2,...,100 and <tt>p</tt> = 0.5 use the following program</p>
+<pre>   VariBinomial VB;
+   for (int n = 1; n &lt;= 100; ++n)
+   {
+      Real p = 0.5;
+      cout &lt;&lt; VB.iNext(n, p) &lt;&lt; end;
+   }</pre>
+<p>The constructor is slow so put it outside any loop. The individual 
+calls to <TT>iNext</TT> should be quite fast. The method is approximate if both <TT>
+n*p &gt; 200</tt> and <tt>n*(1-p) &gt; 200.</TT> The 
+constructor is not in any class hierarchy and <TT>iNext</TT> is not virtual.</p>
+<p>This class is somewhat beta-ish and may change in a future release of <i>
+newran</i>.</p>
+
+<h3><a name="VariLogNormal"></a>VariLogNormal</h3>
+
+<p>Use this class if you want to generate a log normal random variable and you&nbsp; 
+want to change the parameters of the  frequently. There is one member function</p>
+
+<pre>   Real VariLogNormal::Next(Real mean, Real sd);</pre>
+<p>which returns a new log normal random number with mean <tt>mean</tt> and 
+standard deviation <tt>sd</tt>. Note that <tt>mean</tt> and 
+<tt>sd</tt> are the mean and standard deviation of the log normal distribution and not of 
+the underlying normal distribution. To generate 
+100 log normal random numbers with <tt>mean</tt> = 1,2,...,100 and <tt>sd</tt> = 1.0 use the following program</p>
+<pre>   VariLogNormal VLN;
+   for (int i = 1; i &lt;= 100; ++i)
+   {
+      Real mean = i; Real sd = 1.0;
+      cout &lt;&lt; VLN.Next(mean, sd) &lt;&lt; end;
+   }</pre>
+<p>The 
+constructor is not in any class hierarchy and <TT>Next</TT> is not virtual. This class is somewhat beta-ish and may change in a future release of <i>
+newran</i>.</p>
+
+<h3><a NAME="extreal"></a>ExtReal</h3>
+
+<p>A class consisting of a Real and an enumeration, <tt>EXT_REAL_CODE</tt>, taking the
+following values: 
+
+<ul>
+  <li>Finite</li>
+  <li>PlusInfinity</li>
+  <li>MinusInfinity</li>
+  <li>Indefinite</li>
+  <li>Missing</li>
+</ul>
+
+<p>The arithmetic functions <tt>+</tt>, <tt>-</tt>, <tt>*</tt>, <tt>/</tt> are defined in
+the obvious ways, as is <tt>&lt;&lt;</tt> for printing. The constructor can take either a
+Real or a value of <tt>EXT_REAL_CODE</tt> as an argument. If there is no argument the
+object is given the value <i>Missing</i>. Member function <tt>IsReal()</tt> returns <i>true</i>
+if the enumeration value is <i>Finite</i> and in this case value of the Real can be found
+with <tt>Value()</tt>. The enumeration value can be found with member function <tt>Code()</tt>.
+</p>
+
+<p><i>ExtReal</i> is used at the type for values returned from the <i>Mean</i> and <i>Variance</i>
+member functions since these values may be infinite, indefinite or missing. </p>
+
+<p>&nbsp;</p>
+
+<h2><a NAME="supporting"></a>Descriptions of the supporting classes:</h2>
+
+<h3>ChiSq1:</h3>
+
+<p>Non-central chi-squared with one degree of freedom. Used as part of ChiSq. </p>
+
+<h3>Gamma1:</h3>
+
+<p>This generates random numbers from a gamma distribution with shape parameter <tt>alpha
+&lt; 1</tt>. Because the density is infinite at <i>x</i> = 0 a power transform is
+required. The constructor takes <tt>alpha</tt> as an argument. </p>
+
+<h3>Gamma2:</h3>
+
+<p>Gamma distribution for the shape parameter, <tt>alpha</tt>, greater than 1. The
+constructor takes <tt>alpha</tt> as the argument. </p>
+
+<h3>Poisson1:</h3>
+
+<p>Poisson distribution; derived from AsymGen. The constructor takes the mean as the
+argument. Used by Poisson for values of the mean greater than 10. </p>
+
+<h3>Poisson2:</h3>
+
+<p>Poisson distribution with mean less than or equal to 10. Uses DiscreteGen. Constructor
+takes the mean as its argument. </p>
+
+<h3>Binomial1:</h3>
+
+<p>Binomial distribution; derived from AsymGen. Used by Binomial for <tt>n &gt;= 40</tt>.
+Constructor takes <i>n</i> and <i>p</i> as arguments.</p>
+
+<h3>Binomial2:</h3>
+
+<p>Binomial distribution with <tt>n &lt; 40</tt>. Uses DiscreteGen. Constructor takes <i>n</i>
+and <i>p</i> as arguments. </p>
+
+<h3>AddedRandom, SubtractedRandom, MultipliedRandom, ShiftedRandom,
+ReverseShiftedRandom, ScaledRandom, RepeatedRandom, SelectedRandom, AddedSelectedRandom:</h3>
+
+<p>These are used by SumRandom and MixedRandom. </p>
+
+<h2><a NAME="generating"></a>Generating numbers from other
+distributions:</h2>
+
+<table BORDER="0" CELLSPACING="4" CELLPADDING="4">
+  <tr>
+    <th ALIGN="LEFT" VALIGN="TOP"><b>Distribution type</b></th>
+    <th ALIGN="LEFT" VALIGN="TOP"><b>Method</b></th>
+    <th ALIGN="LEFT" VALIGN="TOP"><b>Example</b></th>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">Continuous finite unimodal density (no parameters, can calculate density)</td>
+    <td VALIGN="TOP">Use <a HREF="#posgenx">PosGenX</a>, <a HREF="#symgenx">SymGenX</a> or <a
+    HREF="#asymgenx">AsymGenX</a>.</td>
+    <td VALIGN="TOP"></td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">Continuous finite unimodal density (with parameters, can calculate
+    density)</td>
+    <td VALIGN="TOP">Derive a new class from <a HREF="#posgen">PosGen</a>, <a HREF="#symgen">SymGen</a>
+    or <a HREF="#asymgen">AsymGen</a>, over-ride <i>Density</i>.</td>
+    <td VALIGN="TOP">Gamma2</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">Can calculate inverse of distribution</td>
+    <td VALIGN="TOP">Transform <a HREF="#random">uniform random</a> number.</td>
+    <td VALIGN="TOP">Pareto</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">Transformation of supported random number</td>
+    <td VALIGN="TOP">Derive a new class from the existing class</td>
+    <td VALIGN="TOP">ChiSq1</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">Transformation of several random numbers</td>
+    <td VALIGN="TOP">Derive new class from <a HREF="#random">Random</a>; generate the new
+    random number from the existing generators.</td>
+    <td VALIGN="TOP">ChiSq</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">Density with infinite singularity</td>
+    <td VALIGN="TOP">Transform a random variable generated by <a HREF="#posgen">PosGen</a>, <a
+    HREF="#symgen">SymGen</a> or <a HREF="#asymgen">AsymGen</a>.</td>
+    <td VALIGN="TOP">Gamma1</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">Distribution with several modes</td>
+    <td VALIGN="TOP">Breakdown into a <a HREF="#mixed">mixture</a> of unimodal distributions.</td>
+    <td VALIGN="TOP"></td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">Linear or quadratic combination of supported random numbers</td>
+    <td VALIGN="TOP">Use <a HREF="#sum">SumRandom</a>.</td>
+    <td VALIGN="TOP"></td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">Mixture of supported random numbers</td>
+    <td VALIGN="TOP">Use <a HREF="#mixed">MixedRandom</a>.</td>
+    <td VALIGN="TOP"></td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">Discrete distribution (&lt; 100 possible values)</td>
+    <td VALIGN="TOP">Use <a HREF="#discretegen">DiscreteGen</a>.</td>
+    <td VALIGN="TOP">Poisson2</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">Discrete distribution (many possible values)</td>
+    <td VALIGN="TOP">Use <a HREF="#posgen">PosGen</a>, <a HREF="#symgen">SymGen</a> or <a
+    HREF="#asymgen">AsymGen</a>.</td>
+    <td VALIGN="TOP">Poisson1</td>
+  </tr>
+</table>
+
+<p>&nbsp;</p>
+<h2><a NAME="other"></a>Other people's code:</h2>
+
+<p>The Shell sort and quick sort are adapted from <i>Algorithms in C++</i> by 
+Sedgewick published by Addison Wesley. The log gamma function coefficients were 
+found using a modification of Paul Godfrey's matrix multiplication method -&nbsp; 
+see <a href="http://home.att.net/~numericana/answer/info/godfrey.htm">
+http://home.att.net/~numericana/answer/info/godfrey.htm</a>.</p>
+
+<p>See also the <a href="#urng">section on the uniform generators</a>.</p>
+
+<p>&nbsp;</p>
+<h2><a NAME="files"></a>Files included in this package:</h2>
+
+<table BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
+  <tr>
+    <td VALIGN="TOP">readme.txt</td>
+    <td VALIGN="TOP">readme file</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">nr03doc.htm</td>
+    <td VALIGN="TOP">this file</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">rbd.css</td>
+    <td VALIGN="TOP">style sheet for nr03doc.htm.</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">newran.h</td>
+    <td VALIGN="TOP">header file for <i>newran</i></td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">newran1.cpp</td>
+    <td VALIGN="TOP">body file for uniform random number generators</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">newran2.cpp</td>
+    <td VALIGN="TOP">body file for non-uniform distributions</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">extreal.h</td>
+    <td VALIGN="TOP">header file for <i>extended reals</i></td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">extreal.cpp</td>
+    <td VALIGN="TOP">body file for <i>extended reals</i></td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">simpstr.h</td>
+    <td VALIGN="TOP">header file for <i>simple string class</i></td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">simpstr.cpp</td>
+    <td VALIGN="TOP">body file for <i>simple string class </i></td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">myexcept.h</td>
+    <td VALIGN="TOP">header file for exceptions</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">myexcept.cpp</td>
+    <td VALIGN="TOP">body file for exceptions</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">include.h</td>
+    <td VALIGN="TOP">option file</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">tryrand.h</td>
+    <td VALIGN="TOP">header file for tryrand</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">tryrand.cpp</td>
+    <td VALIGN="TOP">test file</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">tryrand1.cpp</td>
+    <td VALIGN="TOP">called by tryrand - histograms of simple examples</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">tryrand2.cpp</td>
+    <td VALIGN="TOP">called by tryrand - histograms of advanced examples</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">tryrand3.cpp</td>
+    <td VALIGN="TOP">called by tryrand - statistical tests</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">tryrand4.cpp</td>
+    <td VALIGN="TOP">called by tryrand - test permutations</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">tryrand5.cpp</td>
+    <td VALIGN="TOP">called by tryrand - test &quot;vari&quot; versions of generators</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">tryrand6.cpp</td>
+    <td VALIGN="TOP">called by tryrand - test stable generators</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">tryrand.txt</td>
+    <td VALIGN="TOP">output from tryrand</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">tryurng.h</td>
+    <td VALIGN="TOP">header file for tryurng</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">tryurng.cpp</td>
+    <td VALIGN="TOP">test file for uniform random number generators</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">tryurng1.cpp</td>
+    <td VALIGN="TOP">called by tryurng</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">test_out.h</td>
+    <td VALIGN="TOP">header file for statistical test print out</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">test_out.cpp</td>
+    <td VALIGN="TOP">body file for statistical test print out</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">utility.h</td>
+    <td VALIGN="TOP">header file for statistical distributions calculation</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">utility.cpp</td>
+    <td VALIGN="TOP">body file for statistical distributions calculation</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">format.h</td>
+    <td VALIGN="TOP">header file for formatted printout</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">format.cpp</td>
+    <td VALIGN="TOP">body file for formatted printout</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">str.h</td>
+    <td VALIGN="TOP">header file for string class</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">str.cpp</td>
+    <td VALIGN="TOP">body file for string class</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">array.h</td>
+    <td VALIGN="TOP">simple array class</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">tryurng.txt</td>
+    <td VALIGN="TOP">output from tryurng</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">geturng.cpp</td>
+    <td VALIGN="TOP">get dataset from uniform random number generators</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">nr_ex.cpp</td>
+    <td VALIGN="TOP">example file</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">nr_ex.txt</td>
+    <td VALIGN="TOP">output from example file</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">fm.txt</td>
+    <td VALIGN="TOP">seed file for Fishman Moore generator</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">lgm.txt</td>
+    <td VALIGN="TOP">seed file for LGM generator</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">lgm_mixed.txt</td>
+    <td VALIGN="TOP">seed file for mixed LGM generator</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">mother.txt</td>
+    <td VALIGN="TOP">seed file for mother-of-all generator</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">mt19937.txt</td>
+    <td VALIGN="TOP">seed file for Mersenne twister generator</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">multwc.txt</td>
+    <td VALIGN="TOP">seed file for multiply with carry generator</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">wh.txt</td>
+    <td VALIGN="TOP">seed file for Wichmann Hill generator</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">nr_cc.mak</td>
+    <td VALIGN="TOP">make file for CC compiler</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">nr_gnu.mak</td>
+    <td VALIGN="TOP">make file for gnu G++ compiler</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">nr_il8.mak</td>
+    <td VALIGN="TOP">make file for Intel 8 or 9 compilers under Linux</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">nr_b55.mak</td>
+    <td VALIGN="TOP">make file for Borland 5.5 compiler</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">nr_b56.mak</td>
+    <td VALIGN="TOP">make file for Borland 5.6 compiler</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">nr_m6.mak</td>
+    <td VALIGN="TOP">make file for Microsoft Visual C++ 6, 7 and 7.1</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">nr_m8.mak</td>
+    <td VALIGN="TOP">make file for Microsoft Visual C++ 8</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">nr_i8.mak</td>
+    <td VALIGN="TOP">make file for Intel C++ 8 or 9 for MS Windows</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">nr_ow.mak</td>
+    <td VALIGN="TOP">make file for Open Watcom compiler</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">nr_targ.txt</td>
+    <td VALIGN="TOP">list of targets for generating make file</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">newran.lfl</td>
+    <td VALIGN="TOP">list of library files for generating make file</td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">_newran.dox</td>
+    <td VALIGN="TOP">description file about newran for doxygen </td>
+  </tr>
+  <tr>
+    <td VALIGN="TOP">_rbd_com.dox</td>
+    <td VALIGN="TOP">description file about common files for doxygen </td>
+  </tr>
+</table>
+
+<p>&nbsp;</p>
+<h2><a NAME="class"></a>Class structure:</h2>
+
+<p>The following diagram gives the class hierarchy of the package. </p>
+
+<pre class="small"><b>ExtReal</b>.......................... <i>Extended real numbers
+
+</i><b>Random</b>........................... Uniform random number generator
+&nbsp;|
+&nbsp;+---Constant.................... Return a constant
+&nbsp;|
+&nbsp;+---PosGen...................... Used by PosGenX etc
+&nbsp;|&nbsp;&nbsp;&nbsp; |
+&nbsp;|&nbsp;&nbsp;&nbsp; +---PosGenX................ Positive random #s from decreasing density
+&nbsp;|&nbsp;&nbsp;&nbsp; |
+&nbsp;|&nbsp;&nbsp;&nbsp; +---Exponential............ Negative exponential rng
+&nbsp;|&nbsp;&nbsp;&nbsp; |
+&nbsp;|&nbsp;&nbsp;&nbsp; +---Gamma1................. Used by Gamma (shape parameter &lt; 1)
+&nbsp;|&nbsp;&nbsp;&nbsp; |
+&nbsp;|&nbsp;&nbsp;&nbsp; +---SymGen................. Used by SymGenX etc
+&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
+&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; +---SymGenX........... Random numbers from symmetric density
+&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
+&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; +---Cauchy............ Cauchy random number generator
+&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
+&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; +---Normal............ Standard normal random number generator
+&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
+&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; +---ChiSq1....... Used by ChiSq (one df)
+&nbsp;|&nbsp;
+&nbsp;+---AsymGen..................... Used by AsymGenX etc
+&nbsp;|&nbsp;&nbsp;&nbsp; |
+&nbsp;|&nbsp;&nbsp;&nbsp; +---AsymGenX............... Random numbers from asymmetric density
+&nbsp;|&nbsp;&nbsp;&nbsp; |
+&nbsp;|&nbsp;&nbsp;&nbsp; +---Poisson1............... Used by Poisson (mean &gt; 8)
+&nbsp;|&nbsp;&nbsp;&nbsp; |
+&nbsp;|&nbsp;&nbsp;&nbsp; +---Binomial1.............. Used by Binomial (n &gt;= 40)
+&nbsp;|&nbsp;&nbsp;&nbsp; |
+&nbsp;|&nbsp;&nbsp;&nbsp; +---NegativeBinomial....... Negative binomial random number generator
+&nbsp;|&nbsp;&nbsp;&nbsp; |
+&nbsp;|&nbsp;&nbsp;&nbsp; +---Gamma2................. Used by Gamma (shape parameter &gt; 1)
+ |
+ +---Uniform..................... Uniform random number generator
+&nbsp;|
+&nbsp;+---ChiSq....................... Non-central chi-squared rng
+&nbsp;|
+&nbsp;+---Gamma....................... Gamma random number generator
+&nbsp;|
+&nbsp;+---Pareto...................... Pareto random number generator
+&nbsp;|
+&nbsp;+---DiscreteGen................. Discrete random number generator
+&nbsp;|
+&nbsp;+---Poisson2.................... Used by Poisson (mean &lt;= 8)
+&nbsp;|
+&nbsp;+---Binomial2................... Used by Binomial (n &lt; 40)
+&nbsp;|
+&nbsp;+---Poisson..................... Poisson random number generator
+&nbsp;|
+&nbsp;+---Binomial.................... Binomial random number generator
+ |
+ +---Stable...................... Stable random number generator
+&nbsp;|
+&nbsp;+---SumRandom................... Sum of random numbers
+&nbsp;|
+&nbsp;+---MixedRandom................. Mixture of random numbers
+&nbsp;|
+&nbsp;+---MultipliedRandom............ Used by SumRandom
+&nbsp;|&nbsp;&nbsp;&nbsp; |
+&nbsp;|&nbsp;&nbsp;&nbsp; +---AddedRandom............ Used by SumRandom
+&nbsp;|&nbsp;&nbsp;&nbsp; |
+&nbsp;|&nbsp;&nbsp;&nbsp; +---SubtractedRandom....... Used by SumRandom
+&nbsp;|
+&nbsp;+---ShiftedRandom............... Used by SumRandom
+&nbsp;|&nbsp;&nbsp;&nbsp; |
+&nbsp;|&nbsp;&nbsp;&nbsp; +---ReverseShiftedRandom... Used by SumRandom
+&nbsp;|&nbsp;&nbsp;&nbsp; |
+&nbsp;|&nbsp;&nbsp;&nbsp; +---ScaledRandom........... Used by SumRandom
+&nbsp;|
+&nbsp;+---NegatedRandom.......... .... Used by SumRandom
+&nbsp;|
+&nbsp;+---RepeatedRandom.............. Used by SumRandom
+&nbsp;|
+&nbsp;+---AddedSelectedRandom......... Used by MixedRandom
+&nbsp;|
+&nbsp;+---SelectedRandom.............. Used by MixedRandom
+ |
+ +---LGM_base.................... Base for two LGM generators
+ |    |
+ |    +---LGM_simple............. Ordinary LGM generator
+ |    |
+ |    +---LGM_mixed.............. Mixed LGM generator
+ |
+ +---WH.......................... Wichmann-Hill generator
+ |
+ +---FM.......................... Fishman-Moore generator
+ |
+ +---MotherOfAll................. Mother of all generator
+ |
+ +---MultWithCarry............... Multiply with carry generator
+ |
+ +---MT.......................... Mersenne twister generator
+ |
+ +---DummyRNG.................... Dummy generator
+ 
+<b>RandomPermutation</b>................ Random permutation
+&nbsp;|
+&nbsp;+---RandomCombination........... Sorted random permutation
+
+<b>VariPoisson</b>...................... Poisson generator
+
+<b>VariBinomial</b>..................... Binomial generator
+
+<b>VariLogNormal</b>.................... Log normal generator
+</pre>
+
+<p>&nbsp;</p>
+<h2><a NAME="todo"></a>To do:</h2>
+
+<ul>
+  <li>Additional generator classes;</li>
+  <li>Better methods for combinations and permutations with large <tt>N</tt> and small <tt>M</tt>;</li>
+  <li>Faster method for normal distribution?</li>
+  <li>Improve test program</li>
+</ul>
+
+<p>&nbsp;</p>
+<h2><a name="history"></a>History:</h2>
+
+<p class="small">April, 2006 - make compatible with G++ 4.1</p>
+<p class="small">September, 2005 - minor improvements, fix problem with <i>Mother</i> 
+initialisation, start setting up comment structure for Doxygen</p>
+<p class="small">April, 2004 - better tests of permutation function, new log gamma function</p>
+
+<p class="small">November, 2003 - minor improvements</p>
+
+<p class="small">March, 2003 - include stable distribution generator</p>
+
+<p class="small">October, 2002 - new uniform RNGs</p>
+
+<p class="small">July, 2002 - bring into line with my other libraries; VariPoisson, 
+VariBinomial, VariLogNormal classes; change to Sedgewick's Shell sort.</p>
+
+<p class="small">August, 1998 - update exception package; work around problem with MS VC++ 5</p>
+
+<p class="small">January, 1998 - version compatible with newmat09</p>
+
+<p class="small">1995 - <em>newran</em> version, additional distributions</p>
+
+<p class="small">1989 - initial version</p>
+
+<hr>
+
+<p><a HREF="#top">Go to top</a> </p>
+
+<p><a HREF="ol_doc.htm">To online documentation page</a>&nbsp; </p>
+</body>
+</html>

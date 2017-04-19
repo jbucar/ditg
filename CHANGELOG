@@ -1,0 +1,256 @@
+- v2.8.1: Stable
+New Features
+    ITGSend
+	Added -Fp to read payload content from file instead of using random bytes
+    ITGDec
+	Added -c option to generate a combined log including all the metrics
+    Common
+	Added -q option to ITGSend, ITGRecv and ITGLog to set the log buffer size
+Improvements
+    ITGSend
+	Renamed onoff mode to bursty mode
+	Improved inline help screen
+    ITGRecv
+	Improved thread management with explicit detach request upon creation
+	Improved support for IPv6 on Windows (dual stack is now supported starting from Vista)
+	Improved startup output on Windows with multiport=on
+    ITGDec
+	Forced buffer flush when generating Octave output to allow in-pipe live plotting
+    Makefiles
+	Improved Linux->Windows cross-compilation using Mingw
+	Cleaned make output and inline help
+	Added simple checks for dependencies with hints on errors
+	Added a wrapper Makefile to select the right mk file depending on the operating system
+    Common
+	Added support for Apple OSX without IPv6 (tested on Leopard)
+	Added support for FreeBSD without IPv6
+	Reformatted most code to make it more readable
+	Redirected all error messages to standard error
+Bug Fixing
+    ITGSend
+	Fixed segfault when using RTTM meter without sender-side log
+	Fixed infinite generation of traffic with bursty flows enabled and -z or -k options
+	Fixed sender-side log format with RTTM meter
+	Fixed useless wait for packets at the end of the generation with RTTM meter
+	Fixed crash caused by empty lines at the end of the script file
+	Fixed segfault SCTP multi-channel
+	Fixed RequestToSend: precise length and byte ordering on signaling channel
+	Fixed destAddr allocation
+	Fixed daemon mode crash on malformed incoming requests
+    ITGRecv
+	Fixed several long-term memory leaks
+	Fixed SignalManager select fdset size causing the last socket to be ignored
+	Fixed DoS vulnerability when accepting empty connections
+	Fixed UDP thread exit on error
+	Fixed getaddrinfo bug with IPv6 addresses
+	Fixed missing flowId assignment
+	Fixed DS byte consistency in RTTM mode
+	Fixed dirty sockaddr_in mallocs on OSX
+    ITGplot
+	Fixed compatibility issues with octave 3.6
+    Common
+	Fixed generation deadlock with minimum packet sizes and RTTM meter
+	Applied patch from Roland Stigge to timestamp.h to solve compilation issues
+	Fixed compilation under Fedora 18, CentOS 6.3, and Debian 6.07
+	Fixed PF_INET6 cross-OS portability
+	Fixed IPv6 local-scope addresses management
+
+- v2.8.0-rc1: Beta
+New Features
+    ITGSend
+	Added the possibility to to a specific source address for data flows: "-sa" option
+	Added the possibility to read payload sizes and IDTs from file: "-Fs" and "-Ft" options
+	Added the possibility to specify the number of packets to generate: "-z" option
+	Added the possibility to specify the amount of Kbytes to generate: "-k" option
+	Added the possibility to specify both source and destination addresses and port numbers for the signaling channel: "-Sda" "-Sdp" "-Ssa" "-Ssp" options
+	Added the possibility to bind to a specific interface for the signaling channel: "-Si" option
+	Added the possibility to let ITGRecv decide the data destination port number: "-rp 0" option (set as default)
+    ITGRecv 
+	Added the possibility to change the signaling port number: "-Sp" option (ack to Grzegorz Lysko)
+	Added the possibility to specify the port number of the log server: "-L p" sub-option (ack to Grzegorz Lysko)
+	Added the possibility to bind to a specific interface for the signaling channel: "-Si" option
+	Added the possibility to bind to a specific source address for data flows: "-a" option
+	Added the possibility to receive multiple data flows on the same port number (only for TCP and UDP): requires "multiport=on" compile-time option
+    ITGDec
+	Added the possibility to customize the name of output files: "-j", "-d", "-b", "-p" options
+    Common
+	Added passive mode which enables ITGRecv to start the communication as a way to provide NAT traversal (only for TCP and UDP): "-H" option
+Improvements
+    ITGSend
+	Improved the precision in respecting IDTs lower than 1 ms by polling: "-poll" option
+    ITGRecv 
+	Reorganized the parser with support for sub-options
+    Common
+	Adoption of portable integer types to avoid inconsistencies between different architectures
+	Improved the IPv4/IPv6 compatibility
+	Improved the error handling for TCP flows
+	Improved the signaling protocol to support crashes of endpoints without losing consistency
+	Disabled the "waitStopKey" thread by default: now requires "-gui" as the first option
+	Improved the portability of the logs
+	Enabled support for OSX (without ipv6)
+	Enabled support for uclibxx (testend under OpenWRT)
+	Improved console output to show version information and compile-time options
+Bug Fixing
+    ITGSend
+	Fixed the generation of TCP flows to avoid the fragmentation of the preamble
+	Fixed the header size for VoIP traffic
+	Fixed logging format when working in both OWDM and RTTM modes
+	Fixed addresses and port numbers inside log files in OWDM mode
+	Fixed the alignment of the SCTP preamble on 64 bit machines
+	Fixed the generation of random payload content
+	Fixed the generation delay to allow gaps without traffic
+    ITGRecv
+	Fixed the management of the TSP_CLOSED_ERR message
+	Fixed "-l" option inline documentation
+	Fixed logging when receiving multiple flows using the sender-side "-x" option
+	Fixed the packet counter to include the last packets
+	Fixed remote logging when using sender-side "-p 2" option
+    ITGDec
+	Fixed loss burst rate computation
+    ITGPlot
+	Fixed to work with Octave 3.2
+    Common
+	Made strtok() thread-safe
+	Fixed the compilation on 64 bit architectures
+	Fixed the remote logging to support both big- and little-endian architectures
+	Fixed the alignement of preamble fields between Linux and Windows
+	Fixed compilation errors under Windows (mingw32 and DevC++)
+	Fixed most warnings and debug messages
+    
+- v2.7.0-Beta2: Beta
+Improvements
+    Added support for 64 bit processors
+    Adopted new version of newran library
+Bug Fixing
+    Corrected behavior of ITGRecv with DCCP in RTTM mode
+    Corrected a bug in the compilation with SCTP enabled
+    Corrected behavior of IPv6 under Windows
+
+- v2.7.0-Beta: Beta
+New Features
+    Added Burst (aka On/Off) and Weibull traffic types
+    Added the possibility to bind to a specific network interface
+    ITGDec now reports the average loss-burst size also
+Improvements
+    Added support for compiling under Spark64 (thanks to Gerrit Renker)
+Bug Fixing
+    Fixed compilation errors with g++ 4.3.1
+    Fixed a bug in ITGDec which caused an 'Error opening file ...' error
+
+- v2.6.1d: Stable
+License
+    D-ITG is now released under GPLv3 license
+Improvements
+    Added MinGW makefile to compile Win32 binaries on linux
+Bug Fixing
+    Fixed a lot of warnings shown using gcc 4.2.3 version
+
+- v2.6.1c: Stable
+Bug Fixing
+    Fixed problem related to ITGDec options -b, -j, -p and -d
+    Addedd Sleep(1000) call into waitStopKey() functions to solve some timing problems
+
+- v2.6.1b: Stable
+Improvements
+    Linux: simplified method to enable DCCP, SCTP and DEBUG without modifying "Makefile"
+    Windows: simplified method to enable IPv6 and DEBUG without modifying "win.mk"
+    Improved installation guide (see INSTALL file)
+Bug Fixing
+    Fixed compilation problem related to IPv6 DS byte setting with old kernel and libc versions
+
+- v2.6.1: Stable
+New Features
+    Added modifications suggested by Volker Semken to let GUI work better
+Bug Fixing
+    Now IPv6 version works again both under Linux and Windows
+    IPv6 DS byte now works correctly
+    Now the Sender logfile pathname can contain spaces (only in command-line mode at the moment)
+    A lot of warning fixed both under Linux and Windows
+
+- v2.6: Stable
+License
+    D-ITG is no more released under GPL license. The new one is reported in the source package inside LICENSE file.
+Manual
+    The information related to the new features have been added.
+Bug Fixing
+    MSG_DONTWAIT flag under Windows;
+    Timeout calculation in OWDM mode;
+    Send time reported by remote log;
+    Inter-departure time statistical distribution accuracy.
+    Random number seed option.
+
+- v2.5: D-ITG 2.5 "INFOCOM 2007 Edition"
+New features
+    Preliminary SCTP support.
+    Preliminary DCCP support.
+    Support for three different types of log-info (-pl option). This feature allows to send smaller packets.
+    Currently it is possible to disable the strategy used to guarantee the mean bitrate (-j option).
+    Several new decoding features have been added to the decoder ITGDec:
+	Reconstruction of receiver log files created by using the new log-info types (-r option).
+	Printing of the inter departure time of each packet (-? option).
+	Printing of the packet size of each packet (-j option).
+    Improved version of the manual.
+    Both an "install" and an "uninstall" options have been added to the Linux Makefile.
+Bug Fixing
+    A massive work of stability fixes has been done.
+    Some of the bugs fixed are related to:
+	The management of the log files at receiver side;
+	Parsing of multiple flows; 
+	The decoding of log files.
+
+- v2.4: D-ITG 2.4(02) Decoder
+D-ITG Decoder
+    Errors coming out with gcc v3.4 compiler have been fixed
+
+- v2.4: D-ITG 2.4 GUI
+D-ITG Graphical User Interface:
+    This GUI is written in Java and should support any plattform D-ITG is and will be ported to. It supports all traffic settings of the version 2.4.
+
+- v2.4: Stable
+Bug Fixing
+    Header VoIP packets
+    Nagle algorithm settings
+    TCP packets receiving
+    More details in the documentation about the interaction between sender and receiver
+    rttm option by using the signaling channel
+    DS setting on Windows OSs
+    log options (-L, -l, etc.): default value
+    -f (TTL) option runs correctly on Linux OSs
+Improvements
+    Software architecture has been deeply revised and optimized
+    -x (see the manual for details)
+    Currently the log server supports multiflows
+    New Decoder. It is able to determine a lot of output results (see the manual for details)
+    IPv6 traffic generation
+    Nagle option management via CLI
+    Sender port setting
+    Synchronization with the serial port (signal raising for each sent and received packet)
+    Packet payload filled in a random fashion
+    -P option (priority setting on Windows OSs)
+    -X option (more log servers are available, see the manual for details)
+
+- v2.3: Stable
+    A lot of bugs fixed.
+
+- v2.1: Stable
+    Windows makefile and Windows binary files.
+
+- v2.0: Alpha
+    Multithread implementation and Windows version.
+
+- v1.1: Alpha
+    TCP communication with Log Server was fixed and the performance was improved.
+
+- v1.0: Alpha
+    TCP communication with Log Server was added.
+
+- v0.9: Alpha
+    The first distributed version was released. The "Log Server" was introduced.
+
+- v0.2: Alpha
+    TCP traffic generation was added.
+
+- v0.1: Alpha
+    The first version. Only sender and receiver were present. UDP was the supported protocol.
+
+

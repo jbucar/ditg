@@ -1,0 +1,25 @@
+Test of production code for gamma function
+
+Test values from -75 to 75
+
+Maximum relative error
+   arguments >= 1:          2.4e-14
+   arguments <  1:          4.2e-14
+
+Now do logs
+
+Maximum relative error
+   arguments >= 1:          2.2e-15
+   arguments <  1:          4.0e-15
+error at 1 (should be 0):   0.0e+00
+error at 2 (should be 0):   0.0e+00
+
+Number of sign errors (should be 0) = 0
+
+Test with integer z in range 100 to 10000
+
+Maximum relative error =    0.0e+00
+
+Test for z near 1 or 2
+Maximum relative error =    6.8e-14
+

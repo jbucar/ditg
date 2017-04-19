@@ -1,0 +1,104 @@
+#! /bin/sh
+
+# This script file runs allcalc and
+# displays graphs from the output files.
+
+# Default values and variable declaration #
+num=0
+window=1
+delay=FALSE
+args=$#
+
+# Formatting for Bit Rate Plot #
+echo "set title 'Bit Rate vs. Start Window Time'">gnudata
+echo "set xlabel 'Time(s)'">>gnudata
+echo "set ylabel 'Bit Rate'">>gnudata
+echo "set data style steps">>gnudata
+echo "set yrange [0:*]">>gnudata
+
+# Usage statement #
+if [ $# = 0 ]; then
+	clear
+	echo "Usage: -d delay plot and rate plot(default=rate plot) -w window_time"
+	echo "-g to produce .gif file(s) -l logFile -f flow_ids--seperated by spaces"
+	echo "note:  the -f option must be specified last"
+	rm gnudata
+else
+	echo "Ode to LAZYPLUS"
+	
+	# Searches command line for arguments #
+	while [ -n "$(echo $1 | grep '-')" ]; do
+		case $1 in
+		-w ) window=$2
+		    args=$(($args-2))
+		    shift;;
+		-d ) delay=TRUE
+		     num=1;;
+		-g ) gif=TRUE
+		     if [ $delay = TRUE ]; then
+		         num=2
+		     else
+		         num=1
+		     fi;;
+		-l ) logFile=$2
+		    args=$(($args-2))
+		    shift;;
+		-f ) flow=$2
+		    args=$(($args-1))
+		    count=0
+		    # Loops through all arguments after the -f option #
+		    while [ $args -gt $num ]; do
+			    ./allcalc -f $2 -w $window $logFile $2.iljjfe
+			    file=$2.iljjfe
+			    
+			    # Determines whether to send plot or replot command to #
+			    # gnuplot scripts #
+			    if [ $count = 0 ]; then
+			   	echo "plot '$file' using 5:9 title 'flow $2'">>gnudata
+				if [ $delay = TRUE ]; then
+			    	   echo "set title 'Delay vs. Recieve Time'">gnudata1
+  				   echo "set ylabel 'Delay'">>gnudata1
+				   echo "set xlabel 'Recieve Time'">>gnudata1
+				   echo "set data style lines">>gnudata1
+				   echo "plot '$file' using 3:4 title 'flow $2'">>gnudata1
+			    	fi
+			    else
+			    	echo "replot '$file' using 5:9 title 'flow $2'">>gnudata
+			    	echo "replot '$file' using 3:4 title 'flow $2'">>gnudata1
+			    fi
+			    shift
+			    args=$(($args-1))
+			    count=$(($count+1))
+		    done
+		    
+		    if [ $gif = TRUE ]; then
+		    	echo "Enter test name"
+			read testname
+			plot=rate_$testname.gif
+			echo "set term gif">>gnudata
+			echo "set output '$plot'">>gnudata
+			echo "replot">>gnudata
+			if [ $delay = TRUE ]; then
+				plot=delay_$testname.gif
+				echo "set term gif">>gnudata1
+				echo "set output '$plot'">>gnudata1
+				echo "replot">>gnudata1
+			fi
+		    fi
+		
+		    # Sends gnuplot the script files #
+		    gnuplot -persist gnudata
+		    if [ $delay = TRUE ]; then
+			    gnuplot -persist gnudata1
+		    fi
+		    
+		    # Cleanup #
+		    rm gnudata
+		    rm gnudata1
+		    rm *.iljjfe;;
+		esac
+		shift 
+	done
+	
+fi
+		    

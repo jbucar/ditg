@@ -1,0 +1,178 @@
+==========================================
+D-ITG Building and Installation Guidelines
+------------------------------------------
+Version: 2.8.1 - Revision:1023
+==========================================
+
+  Outline
+  -------
+
+  1. Requirements
+  2. Building D-ITG from sources
+  3. OS-Specific notes
+
+
+Requirements
+============
+
+D-ITG currently supports the following operating systems:
+ - Linux (Ubuntu, Debian, Fedora, CentOS, OpenWRT)
+ - Windows (XP, Vista, 7)
+ - OSX (Leopard)
+ - FreeBSD
+
+To compile D-ITG you just need GNU Make and gcc. Depending on the operating system,
+some limitations or additional requirements may apply (see Building D-ITG section).
+
+
+Building D-ITG from sources
+===========================
+
+Independently on the operating system, these are the high-level steps to follow:
+
+ 1. download and unpack the "D-ITG-2.8.1-r1023-src.zip" package somewhere
+    on your filesystem
+
+ 2. from the command line, enter the "D-ITG-2.8.1-r1023/src" directory
+
+ 3. type "make" to build the binaries
+
+Once done, the binaries will be copied into the "D-ITG-2.8.1-r1023/bin" directory.
+
+D-ITG also offers some compile-time options. To show the options available for the
+current operating system enter the "D-ITG-2.8.1-r1023/src" and run
+
+    $ make help
+
+Keep in mind that not all the options are available on all operating systems and
+the previous command will only show the options available for the current target.
+
+For instance, to enable DEBUG mode using a specific verbosity level the "debug=<level>"
+option can be specified on the make command line:
+
+    $ make clean all debug=<level>
+
+where <level> is a positive integer value (bigger value -> more verbose).
+Setting debug=0 enables debugging symbols without increasing the verbosity.
+
+Please refer to the manual for more information about compile-time options.
+
+
+OS-Specific notes
+=================
+
+We report in the following some guidelines specific for each supported operating system.
+
+
+  All Unix-like OSes (Linux, FreeBSD, OSX)
+  ----------------------------------------
+
+    - The binaries can be installed using the root account:
+
+        # make install PREFIX=/usr/local
+
+      or as normal user using the sudo utility:
+
+        $ sudo make install PREFIX=/usr/local
+
+      The same way the binaries can be removed by the system:
+
+        # make uninstall PREFIX=/usr/local
+
+      or:
+
+        $ sudo make uninstall PREFIX=/usr/local
+
+
+    - The "multiport" and "bursty" options are enabled by default. They are still optional
+      since no estensive testing has been conducted on them. Both options can be disabled
+      at compile time respectively using "multiport=off" and "bursty=off" options.
+
+
+  Linux
+  -----
+
+    - In order to enable the SCTP protocol (sctp=on option), libsctp should be installed first.
+      This feature is supported starting from kernel version 2.5.15.
+
+    - The DCCP protocol (dccp=on option) is supported starting from kernel version 2.6.14-rc1.
+
+    - Windows binaries can be also built under Linux using Mingw:
+
+        $ make T=win
+
+      If MinGW is installed in a standard location (e.g. /usr/i686-w64-mingw32 on Ubuntu 12.10)
+      it will be automatically detected, otherwise it is necessary to set the MINGW variable to
+      point to the Mingw toolchain path:
+
+        $ export MINGW=/usr/local/i686-w64-mingw32
+
+      In order to show the options available in this case do:
+
+        $ make T=win help
+
+
+  Windows
+  -------
+
+    - Since with Windows XP/2000 listening on both IPv4 and IPv6 sockets is not supported,
+      we provide an "ipv4only=on" option to disable IPv6 support. That means that normally
+      ITGRecv under Windows XP/2000 will only be able to accept connections using IPv6.
+      Using more recent Windows versions using this option is not necessary and ITGRecv
+      will be able to work with IPv4 and IPv6 simultaneously.
+
+    - The compilation under Windows has been tested using Dev-Cpp 4.9.9.2, which includes
+      the Mingw 32-bit toolchain based on GCC 3.4.2. It can be compiled both using the IDE
+      environment and Mingw from the command-line:
+
+        - Using Dev-Cpp IDE:
+
+            1. Open the "src/D-ITG.dev" project
+
+	    2. Uncomment the first lines of the "win-mingw.mk" file to eventually set
+               compile-time options
+
+	    3. Verify that the DEVDIR variable points to the right path of your Dev-Cpp
+               installation
+
+            4. Type CTRL + F11 to compile
+
+        - Using Mingw from the command-line:
+
+	    1. Add the bin folder of Dev-Cpp to the execution path:
+
+                 C:\> set PATH=<Dev-Cpp_dir>\bin:%PATH%
+
+            2. If you installed Dev-Cpp in the default path just do:
+
+                 C:\D-ITG-2.8.1-r1023\src> make
+
+               otherwise you have to specify the right path setting the DEVDIR variable:
+
+                 C:\D-ITG-2.8.1-r1023\src> make DEVDIR=<Dev-Cpp_install_path>
+
+          Also in this case compile-time options are supported. To list them do:
+
+              C:\D-ITG-2.8.1-r1023\src> make help
+
+    - The "multiport" option is set to "off" by default because it currently adds a delay
+      of several seconds when starting ITGRecv.exe.
+
+
+  FreeBSD
+  -------
+
+    - In order to build D-ITG you have to use the GNU version of make:
+
+        $ gmake
+
+    - IPv6, DCCP and SCTP are currently not supported under FreeBSD.
+
+
+  OSX
+  ---
+
+    - IPv6, DCCP and SCTP are currently not supported under OSX.
+
+
+

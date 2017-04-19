@@ -1,0 +1,48 @@
+==============================================
+D-ITG (Distributed Internet Traffic Generator)
+----------------------------------------------
+Version: 2.8.1 - Revision: 1023
+==============================================
+
+D-ITG is a platform capable to produce traffic at packet level accurately 
+replicating appropriate stochastic processes for both IDT (Inter Departure 
+Time) and PS (Packet Size) random variables (exponential, uniform, cauchy, 
+normal, pareto, ...). 
+
+D-ITG supports both IPv4 and IPv6 traffic generation and it is capable to 
+generate traffic at network, transport, and application layer. 
+
+We believe that D-ITG shows interesting properties when compared to other 
+traffic generators.
+
+
+Documentation
+=============
+
+Every D-ITG component comes with a syntetic built-in help, which can be 
+shown launching them with the '-h' option.
+
+For instructions about how to build and install D-ITG please refer to
+the INSTALL file.
+
+For a detailed and up-to-date documentation please refer to the
+manual at the official website:
+
+http://traffic.comics.unina.it/software/ITG/documentation.php
+
+
+Mailing list
+============
+
+If you want to receive information on D-ITG updates, please use the 
+registration page: 
+
+http://traffic.comics.unina.it/software/ITG/registration.php
+
+
+Collaborating
+=============
+
+If you are interested in collaborating with us, please send an e-mail 
+to: ditg@comics.unina.it
+

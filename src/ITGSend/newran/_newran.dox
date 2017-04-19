@@ -1,0 +1,18 @@
+/// \ingroup newran
+///@{
+
+/// \file _newran.dox Newran.
+///
+/// \page newran Newran random number generator library.
+///
+///Newran is a C++ library for generating sequences of pseudo-random numbers
+///from a wide variety of distributions.
+///
+
+
+///@}
+
+
+
+
+

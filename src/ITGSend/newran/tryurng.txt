@@ -1,0 +1,117 @@
+
+Begin test
+Now print a real number: 3.14159
+
+Testing LGM_mixed, N = 1.0e+07
+Test          distrib.    param. 1   param. 2  statistic   n. stat. -lg sig
+Mean         Norm. (2s)     0.0000     912.87     755.53    0.82764    < 1    
+Variance     Norm. (2s)     833330     235.70     833320   -0.06134    < 1    
+AutoCov 1    Norm. (2s)     0.0000     263.52     342.03    1.29789    < 1    
+Chi 4        Chisq (2s)         15                15.170    0.03096    < 1    
+Chi 8        Chisq (2s)        255                220.12   -1.54448    < 1    
+Chi 16       Chisq (2s)      65535                 65255   -0.77447    < 1    
+MM 0-4-2     Chisq (2s)        240                230.93   -0.41394    < 1    
+MM 0-8-2     Chisq (2s)      65280                 65025   -0.70588    < 1    
+MM 0-1-8     Chisq (2s)        128                108.70   -1.20609    < 1    
+MM 0-1-16    Chisq (2s)      32768                 32559   -0.81730    < 1    
+MM sparse    Norm. (2s)     386560     725.38     385830   -1.01298    < 1    
+Elapsed (processor) time = 13.9 seconds
+
+Testing LGM_simple, N = 1.0e+07
+Test          distrib.    param. 1   param. 2  statistic   n. stat. -lg sig
+Mean         Norm. (2s)     0.0000     912.87     974.45    1.06745    < 1    
+Variance     Norm. (2s)     833330     235.70     833430    0.39628    < 1    
+AutoCov 1    Norm. (2s)     0.0000     263.52    -8.9932   -0.03413    < 1    
+Chi 4        Chisq (2s)         15                19.068    0.74280    < 1    
+Chi 8        Chisq (2s)        255                256.59    0.07041    < 1    
+Chi 16       Chisq (2s)      65535                 64802   -2.02558   1.37 *  
+MM 0-4-2     Chisq (2s)        240                241.80    0.08198    < 1    
+MM 0-8-2     Chisq (2s)      65280                 65617    0.93257    < 1    
+MM 0-1-8     Chisq (2s)        128                118.56   -0.59010    < 1    
+MM 0-1-16    Chisq (2s)      32768                 32308   -1.79814   1.15    
+MM sparse    Norm. (2s)     386560     725.38     385750   -1.11913    < 1    
+Elapsed (processor) time = 11.9 seconds
+
+Testing Fishman Moore, N = 1.0e+07
+Test          distrib.    param. 1   param. 2  statistic   n. stat. -lg sig
+Mean         Norm. (2s)     0.0000     912.87    -760.22   -0.83278    < 1    
+Variance     Norm. (2s)     833330     235.70     833610    1.16681    < 1    
+AutoCov 1    Norm. (2s)     0.0000     263.52     76.474    0.29020    < 1    
+Chi 4        Chisq (2s)         15                12.403   -0.47420    < 1    
+Chi 8        Chisq (2s)        255                265.59    0.46875    < 1    
+Chi 16       Chisq (2s)      65535                 65263   -0.75177    < 1    
+MM 0-4-2     Chisq (2s)        240                206.62   -1.52374    < 1    
+MM 0-8-2     Chisq (2s)      65280                 64476   -2.22513   1.59 *  
+MM 0-1-8     Chisq (2s)        128                130.56    0.16023    < 1    
+MM 0-1-16    Chisq (2s)      32768                 32587   -0.70658    < 1    
+MM sparse    Norm. (2s)     386560     725.38     387460    1.23413    < 1    
+Elapsed (processor) time = 12.2 seconds
+
+Testing MT19937, N = 1.0e+07
+Test          distrib.    param. 1   param. 2  statistic   n. stat. -lg sig
+Mean         Norm. (2s)     0.0000     912.87    -378.19   -0.41429    < 1    
+Variance     Norm. (2s)     833330     235.70     833190   -0.62156    < 1    
+AutoCov 1    Norm. (2s)     0.0000     263.52     272.04    1.03232    < 1    
+Chi 4        Chisq (2s)         15                12.396   -0.47533    < 1    
+Chi 8        Chisq (2s)        255                223.58   -1.39109    < 1    
+Chi 16       Chisq (2s)      65535                 65596    0.16959    < 1    
+MM 0-4-2     Chisq (2s)        240                231.76   -0.37628    < 1    
+MM 0-8-2     Chisq (2s)      65280                 65146   -0.37082    < 1    
+MM 0-1-8     Chisq (2s)        128                111.95   -1.00316    < 1    
+MM 0-1-16    Chisq (2s)      32768                 33014    0.95980    < 1    
+MM sparse    Norm. (2s)     386560     725.38     386290   -0.37331    < 1    
+Elapsed (processor) time = 12.4 seconds
+
+Testing Wichmann Hill, N = 1.0e+07
+Test          distrib.    param. 1   param. 2  statistic   n. stat. -lg sig
+Mean         Norm. (2s)     0.0000     912.87     1275.7    1.39745    < 1    
+Variance     Norm. (2s)     833330     235.70     833140   -0.80698    < 1    
+AutoCov 1    Norm. (2s)     0.0000     263.52     119.75    0.45441    < 1    
+Chi 4        Chisq (2s)         15                17.916    0.53245    < 1    
+Chi 8        Chisq (2s)        255                278.00    1.01833    < 1    
+Chi 16       Chisq (2s)      65535                 65632    0.26669    < 1    
+MM 0-4-2     Chisq (2s)        240                242.86    0.13043    < 1    
+MM 0-8-2     Chisq (2s)      65280                 65198   -0.22707    < 1    
+MM 0-1-8     Chisq (2s)        128                100.96   -1.68971   1.13    
+MM 0-1-16    Chisq (2s)      32768                 32850    0.31960    < 1    
+MM sparse    Norm. (2s)     386560     725.38     386920    0.49658    < 1    
+Elapsed (processor) time = 13.1 seconds
+
+Testing MotherOfAll, N = 1.0e+07
+Test          distrib.    param. 1   param. 2  statistic   n. stat. -lg sig
+Mean         Norm. (2s)     0.0000     912.87     1217.6    1.33380    < 1    
+Variance     Norm. (2s)     833330     235.70     833120   -0.92276    < 1    
+AutoCov 1    Norm. (2s)     0.0000     263.52     95.874    0.36382    < 1    
+Chi 4        Chisq (2s)         15                21.024    1.09983    < 1    
+Chi 8        Chisq (2s)        255                265.52    0.46574    < 1    
+Chi 16       Chisq (2s)      65535                 65554    0.05359    < 1    
+MM 0-4-2     Chisq (2s)        240                226.32   -0.62435    < 1    
+MM 0-8-2     Chisq (2s)      65280                 65115   -0.45778    < 1    
+MM 0-1-8     Chisq (2s)        128                137.33    0.58327    < 1    
+MM 0-1-16    Chisq (2s)      32768                 32936    0.65754    < 1    
+MM sparse    Norm. (2s)     386560     725.38     386060   -0.69452    < 1    
+Elapsed (processor) time = 13.9 seconds
+
+Testing MultWithCarry, N = 1.0e+07
+Test          distrib.    param. 1   param. 2  statistic   n. stat. -lg sig
+Mean         Norm. (2s)     0.0000     912.87    -503.68   -0.55175    < 1    
+Variance     Norm. (2s)     833330     235.70     833580    1.05328    < 1    
+AutoCov 1    Norm. (2s)     0.0000     263.52     32.327    0.12267    < 1    
+Chi 4        Chisq (2s)         15                21.049    1.10443    < 1    
+Chi 8        Chisq (2s)        255                280.11    1.11202    < 1    
+Chi 16       Chisq (2s)      65535                 65900    1.00760    < 1    
+MM 0-4-2     Chisq (2s)        240                271.58    1.44145    < 1    
+MM 0-8-2     Chisq (2s)      65280                 65110   -0.46937    < 1    
+MM 0-1-8     Chisq (2s)        128                101.59   -1.65062   1.08    
+MM 0-1-16    Chisq (2s)      32768                 32559   -0.81692    < 1    
+MM sparse    Norm. (2s)     386560     725.38     386620    0.08025    < 1    
+Elapsed (processor) time = 12.8 seconds
+
+
+(The following memory checks are probably not valid with all
+compilers - see documentation)
+
+Checking for lost memory: 9191204 9191204  - ok
+
+Checking for lost memory: 9191204 9191204  - ok
+
