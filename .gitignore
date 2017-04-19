@@ -1,49 +1,43 @@
-*.[oa]
-*.Po
-*.exe
-*.in
-*.so
-*.sw?
-*.class
-.dirstamp
-Makefile
-a.out
-aclocal.m4
-autom4te.cache/
-confdefs.h
-config.log
-config.status
-config.sub
-configure
-openitg
-src/.deps/
-src/Makefile
-src/archutils/Unix/verinc
-src/config.h
-stamp-h1
-version.h
-version.txt
-assets/utilities/itg2-util/src/.deps/
-assets/utilities/itg2-util/src/itg2ac-util
-src/libresample/src/config.h
-src/libresample/tests/testresample
-run
-build/artifacts/
+# Prerequisites
+*.d
 
-# Visual Studio build artefacts
+# Compiled Object files
+*.slo
+*.lo
+*.o
 *.obj
-build-vs2008
-build-vs2010
-ipch
-*.user
-Debug
-Release
-Release-SSE2
-*.sdf
-*.suo
-*.pdb
-*.vscode
 
-# Windows build artefacts
-src/verstub.cpp
-src/version.bin
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+src/ITGDec/ITGDec
+src/ITGLog/ITGLog
+src/ITGSend/ITGSend
+src/ITGRecv/ITGRecv
+src/ITGManager/ITGManager
+
+# Folders
+bin/
+
+# Visual studio code
+.vscode/
