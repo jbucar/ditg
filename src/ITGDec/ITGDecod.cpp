@@ -584,6 +584,7 @@ int main(int argc, char *argv[])
 			if (flaglogout)
 				writeline(logouttype);
 			if (flagoctave) {
+				fprintf(octavefpout, "%7u ", (*infos).flowId);
 				fprintf(octavefpout, "%7u ", (*infos).seqNum);
 				fprintf(octavefpout, "%u %u %lf ", (*infos).txTime1, (*infos).txTime2, (*infos).txTime3);
 				fprintf(octavefpout, "%u %u %lf ", (*infos).rxTime1, (*infos).rxTime2, (*infos).rxTime3);
