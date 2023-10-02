@@ -206,7 +206,7 @@ install: check_uid
 	@ $(CP) $(BIN)/libITG$(SOSUFFIX) "$(PREFIX)/lib"
 	@ echo 'done'
 	@ printf '\n----------------------------------------------------------\n'
-	@ echo 'D-ITG installed in $(BIN)'
+	@ echo 'D-ITG installed in $(PREFIX)/bin'
 	
 ##########
 uninstall: check_uid check_ditg
