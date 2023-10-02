@@ -176,6 +176,7 @@ endif
 	
 ##############
 $(COMPONENTS): $(THOBJS) $(OBJS)
+	@ mkdir -p $(BIN)
 	@ printf '\n-------------------\n'
 	@ echo 'Building $@'
 	@ echo '-------------------'
